@@ -4,7 +4,7 @@ export default class Eases {
 			case 'linear':
 				return this._easeLinear
 			case 'easeOut':
-				return this._easeOutQuad
+				return this._easeOutSine
 			case 'easeOutExpo':
 				return this._easeOutExpo
 			case 'easeOutSpring':
@@ -16,36 +16,27 @@ export default class Eases {
 		}
 	}
 
-	static _easeLinear(t, b, c, d) {
-		return c * t / d + b
+	static _easeLinear(p) {
+		return p
 	}
 
-	static _easeOutQuad(t, b, c, d) {
-		return -c * (t /= d) * (t - 2) + b
+	static _easeOutSine(p) {
+		return Math.sin(p * (Math.PI / 2))
 	}
 
-	static _easeOutExpo(t, b, c, d) {
-		return (t == d) ? b + c : c * (-Math.pow(2, -10 * t / d) + 1) + b
+	static _easeOutExpo(p) {
+		return 1 - Math.pow(2, -10 * p)
 	}
 
-	static _easeOutSpring(t, b, c, d) {
-		let s = 1.70158
-		let p = 0
-		let a = c
-		if (t == 0) return b
-		if ((t /= d) == 1) return b + c
-		if (!p) p = d * .3
-		if (a < Math.abs(c)) {
-			a = c 
-			s = p / 4 
-		} else {
-			s = p / (2 * Math.PI) * Math.asin(c / a)
-		}
-		return a * Math.pow(2, -10 * t) * Math.sin((t * d - s) * (2 * Math.PI) / p) + c + b
+	static _easeOutSpring(p) {
+		const p1 = 1
+		const p2 = 0.3
+		const p3 = p2 / (Math.PI * 2) * (Math.asin(1 / p1) || 0)
+		return p1 * Math.pow(2, -10 * p) * Math.sin( (p - p3) * (Math.PI * 2) / p2 ) + 1
 	}
 
-	static _easeOutBack(t, b, c, d) {
-		const s = 1.70158
-		return c * ((t = t / d - 1) * t * ((s + 1) * t + s) + 1) + b
+	static _easeOutBack(p) {
+		const p1 = 1.70158
+		return ((p = p - 1) * p * ((p1 + 1) * p + p1) + 1)
 	}
 }
