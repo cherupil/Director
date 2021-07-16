@@ -1,4 +1,4 @@
-import Tween from './modules/Tween.js'
+import animate from './modules/Animate.js'
 
 const canvas = document.getElementById('canvas')
 canvas.width = canvas.clientWidth * devicePixelRatio
@@ -9,17 +9,20 @@ ctx.fillStyle = '#000000'
 
 const items = []
 
-for (var i = 0; i < 100; i++) {
+for (var i = 0; i < 1; i++) {
 	items.push({
-		x: Math.floor(Math.random() * canvas.width),
-		y: canvas.height
+		x: canvas.width / 3,
+		y: canvas.height / 2,
+		alpha: 1
 	})
 }
 
 const draw = () => {
+	ctx.fillStyle = `rgba(0, 0, 0, ${items[0].alpha})`
+
 	items.forEach(item => {
 		ctx.beginPath()
-		ctx.arc(item.x, item.y, 16, 0, Math.PI * 2)
+		ctx.arc(item.x, item.y, 64, 0, Math.PI * 2)
 		ctx.fill()
 	})
 }
@@ -27,15 +30,13 @@ const draw = () => {
 const update = () => {
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 	draw()
+	requestAnimationFrame(update)
 }
 
-const tween = Tween.to(items, { x: canvas.width / 2, y: 16 }, 2, 'easeOutExpo', update, update)
+requestAnimationFrame(update)
 
-window.addEventListener('click', () => {
-	ctx.clearRect(0, 0, canvas.width, canvas.height)
-	tween.start()
+window.addEventListener('click', _ => {
+	animate(items, { x: (canvas.width / 3) * 2 }, { duration: 4, ease: 'easeOutSpring' })
 })
-
-
 
 
