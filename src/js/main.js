@@ -1,27 +1,28 @@
 import animate from './modules/Animate.js'
 
 const canvas = document.getElementById('canvas')
-canvas.width = canvas.clientWidth * devicePixelRatio
-canvas.height = canvas.clientHeight * devicePixelRatio
+const pixelRatio = devicePixelRatio
+canvas.width = canvas.clientWidth * pixelRatio
+canvas.height = canvas.clientHeight * pixelRatio
 
 const ctx = canvas.getContext('2d')
-ctx.fillStyle = '#000000'
 
 const items = []
 
-for (var i = 0; i < 10; i++) {
+const colors = ['#FFE7E5', '#FFBDAF', '#E65F5C', '#761111', '#282524', '#E8FFEE', '#36EFB1', '#32D789', '#03330A', '#242825', '#E8F4FF', '#6EE4FF', '#41C0EC', '#031F33', '#242528', '#72FFF9', '#67E6E0', '#387D7A', '#173332', '#242424']
+
+for (var i = 0; i < 100; i++) {
 	items.push({
-		x: Math.floor(Math.random() * (canvas.width - 128)) + 64,
-		y: Math.floor(Math.random() * (canvas.height - 128)) + 64,
-		alpha: 1,
-		scale: 64
+		fill: colors[Math.floor(Math.random() * colors.length)],
+		x: ((Math.floor(Math.random() * (canvas.width * 2))) - canvas.width / 2),
+		y: canvas.height + 32,
+		scale: 32
 	})
 }
 
 const draw = () => {
-	ctx.fillStyle = `rgba(0, 0, 0, ${items[0].alpha})`
-
 	items.forEach(item => {
+		ctx.fillStyle = item.fill
 		ctx.beginPath()
 		ctx.arc(item.x, item.y, item.scale, 0, Math.PI * 2)
 		ctx.fill()
@@ -36,15 +37,9 @@ const update = () => {
 
 requestAnimationFrame(update)
 
-window.addEventListener('click', (event) => {
-	items.forEach(item => {
-		item.x = Math.floor(Math.random() * (canvas.width - 128)) + 64,
-		item.y = Math.floor(Math.random() * (canvas.height - 128)) + 64,
-		item.alpha = 1
-		item.scale = 64
-	})
 
-	animate(items, { x: event.clientX * devicePixelRatio, y: event.clientY * devicePixelRatio, alpha: 0, scale: 0 }, { duration: 1, ease: 'easeOutExpo', stagger: 0.05 })
+window.addEventListener('click', _ => {
+	animate(items, { x: canvas.width / 2, y: 0, scale: 0 }, { duration: 1, ease: 'easeOutSine', stagger: 0.01 })
 })
 
 

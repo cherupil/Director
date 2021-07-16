@@ -15,7 +15,7 @@ export default function animate(target, properties, options) {
 	const stagger = options.stagger * 1000
 
 	const totalDuration = duration + ((targets.length - 1) * stagger)
-
+	
 	const animations = []
 
 	targets.forEach(target => {
