@@ -11,11 +11,11 @@ const items = []
 
 const colors = ['#FFE7E5', '#FFBDAF', '#E65F5C', '#E8FFEE', '#36EFB1', '#32D789', '#E8F4FF', '#6EE4FF', '#41C0EC', '#72FFF9', '#67E6E0', '#387D7A']
 
-for (var i = 0; i < 1000; i++) {
+for (var i = 0; i < 3; i++) {
 	items.push({
 		fill: colors[Math.floor(Math.random() * colors.length)],
-		x: ((Math.floor(Math.random() * (canvas.width * 2))) - canvas.width / 2),
-		y: canvas.height + 32,
+		x: canvas.width / 3,
+		y: (canvas.height / 4) * (i + 1),
 		scale: 32
 	})
 }
@@ -39,7 +39,13 @@ requestAnimationFrame(update)
 
 
 window.addEventListener('click', _ => {
-	Tempo.from(items, { x: canvas.width / 2, y: 0, scale: 0 }, { duration: 1, ease: 'easeOutSine', stagger: 0.01, onStart: () => { console.log('started') }, onUpdate: () => { console.log('updated') }, onComplete: () => { console.log('completed') } })
+	const scene = new Tempo.scene()
+	
+	scene.to(items[0], { x: (canvas.width / 3) * 2 }, { duration: 1, ease: 'easeOutExpo' })
+	scene.from(items[1], { x: (canvas.width / 3) * 2 }, { duration: 2, ease: 'easeOutExpo' })
+	scene.to(items[2], { x: (canvas.width / 3) * 2 }, { duration: 2, ease: 'easeOutExpo' }, 0)
+
+	scene.play()
 })
 
 
