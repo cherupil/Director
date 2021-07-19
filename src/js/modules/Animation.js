@@ -1,16 +1,33 @@
 export default class Animation {
-	constructor(target, properties, options) {
+	constructor(target, properties, direction) {
 		this.target = target
 		this.properties = properties
-		this.options = options
 
 		this.propertyDeltas = []
-		
-		for (const property in this.properties) {
-			this.propertyDeltas[property] = {
-				start: this.target[property],
-				delta: this.properties[property] - this.target[property]
-			}
+
+		this.setProperties(direction)
+	}
+
+	setProperties(direction) {
+		switch (direction) {
+			case 'to':
+				for (const property in this.properties) {
+					this.propertyDeltas[property] = {
+						start: this.target[property],
+						delta: this.properties[property] - this.target[property]
+					}
+				}
+				break;
+			case 'from':
+				for (const property in this.properties) {
+					this.propertyDeltas[property] = {
+						start: this.properties[property],
+						delta: this.target[property] - this.properties[property]
+					}
+				}
+				break;
+			default:
+				break;
 		}
 	}
 

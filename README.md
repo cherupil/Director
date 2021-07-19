@@ -1,2 +1,2 @@
-# animation
+# Tempo
 A basic tweening library

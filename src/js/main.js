@@ -1,4 +1,4 @@
-import animateTo from './modules/Animate.js'
+import Tempo from './modules/Tempo.js'
 
 const canvas = document.getElementById('canvas')
 const pixelRatio = devicePixelRatio
@@ -9,9 +9,9 @@ const ctx = canvas.getContext('2d')
 
 const items = []
 
-const colors = ['#FFE7E5', '#FFBDAF', '#E65F5C', '#761111', '#282524', '#E8FFEE', '#36EFB1', '#32D789', '#03330A', '#242825', '#E8F4FF', '#6EE4FF', '#41C0EC', '#031F33', '#242528', '#72FFF9', '#67E6E0', '#387D7A', '#173332', '#242424']
+const colors = ['#FFE7E5', '#FFBDAF', '#E65F5C', '#E8FFEE', '#36EFB1', '#32D789', '#E8F4FF', '#6EE4FF', '#41C0EC', '#72FFF9', '#67E6E0', '#387D7A']
 
-for (var i = 0; i < 100; i++) {
+for (var i = 0; i < 1000; i++) {
 	items.push({
 		fill: colors[Math.floor(Math.random() * colors.length)],
 		x: ((Math.floor(Math.random() * (canvas.width * 2))) - canvas.width / 2),
@@ -39,7 +39,7 @@ requestAnimationFrame(update)
 
 
 window.addEventListener('click', _ => {
-	animateTo(items, { x: canvas.width / 2, y: 0, scale: 0 }, { duration: 1, delay: 1, ease: 'easeOutSine', stagger: 0.001, onStart: () => { console.log('started') }, onUpdate: () => { console.log('updated') }, onComplete: () => { console.log('completed') } })
+	Tempo.from(items, { x: canvas.width / 2, y: 0, scale: 0 }, { duration: 1, ease: 'easeOutSine', stagger: 0.01, onStart: () => { console.log('started') }, onUpdate: () => { console.log('updated') }, onComplete: () => { console.log('completed') } })
 })
 
 
