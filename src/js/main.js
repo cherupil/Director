@@ -1,4 +1,4 @@
-import animate from './modules/Animate.js'
+import animateTo from './modules/Animate.js'
 
 const canvas = document.getElementById('canvas')
 const pixelRatio = devicePixelRatio
@@ -39,7 +39,7 @@ requestAnimationFrame(update)
 
 
 window.addEventListener('click', _ => {
-	animate(items, { x: canvas.width / 2, y: 0, scale: 0 }, { duration: 1, ease: 'easeOutSine', stagger: 0.01 })
+	animateTo(items, { x: canvas.width / 2, y: 0, scale: 0 }, { duration: 1, delay: 1, ease: 'easeOutSine', stagger: 0.001, onStart: () => { console.log('started') }, onUpdate: () => { console.log('updated') }, onComplete: () => { console.log('completed') } })
 })
 
 
