@@ -47,15 +47,23 @@ let scene
 setTimeout(() => {
 	scene = new Tempo.scene()
 
-	scene.to(items[0], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 2, ease: 'easeOutExpo' })
-	scene.from(items[1], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 4, ease: 'easeOutExpo' }, 0.25)
+	scene.to(items[0], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 2, ease: 'easeOutExpo', onComplete: () => { console.log('1st complete') } })
+	scene.from(items[1], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 4, ease: 'easeOutExpo', onComplete: () => { console.log('2nd complete') } }, 0.25)
 	scene.to(items[2], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 2, ease: 'easeOutExpo' })
 
 	scene.play()
 }, 500)
 
 window.addEventListener('click', _ => {
-	scene.pause()
+	if (scene.paused) {
+		if (scene.rewinding) {
+			scene.play()
+		} else {
+			scene.rewind()
+		}
+	} else {
+		scene.pause()
+	}
 })
 
 

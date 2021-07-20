@@ -9,11 +9,61 @@ export default class Scene {
 		this.progress = 0
 		this.previousMomentDuration = 0
 		this.totalDuration = 0
+		this.currentAnimationFrame = null
+		this.paused = false
+		this.rewinding = false
 		this.moments = []
 	}
 
 	play() {
-		this._animate()
+		const update = (currentTime) => {
+			this.elapsedTime = (currentTime - this.startTime)
+			this.progress = Math.min(this.elapsedTime / this.totalDuration, 1)
+			this._animate()
+			if (this.progress > 0 && this.progress < 1) {
+				this.currentAnimationFrame = requestAnimationFrame(update)
+			}
+		}
+
+		this.rewinding = false
+
+		if (this.paused) {
+			this.startTime = performance.now() - (this.totalDuration * this.progress)
+		} else {
+			this.startTime = performance.now()
+		}
+
+		this.paused = false
+
+		this.currentAnimationFrame = requestAnimationFrame(update)
+	}
+
+	pause() {
+		cancelAnimationFrame(this.currentAnimationFrame)
+		this.paused = true
+	}
+
+	rewind() {
+		const update = (currentTime) => {
+			this.elapsedTime = Math.max(this.totalDuration - (currentTime - this.startTime), 0)
+			this.progress = Math.min(this.elapsedTime / this.totalDuration, 1)
+			this._animate()
+			if (this.progress > 0 && this.progress < 1) {
+				this.currentAnimationFrame = requestAnimationFrame(update)
+			}
+		}
+
+		this.rewinding = true
+
+		if (this.paused) {
+			this.startTime = performance.now() - (this.totalDuration * (1 - this.progress))
+		} else {
+			this.startTime = performance.now()
+		}
+
+		this.paused = false
+
+		this.currentAnimationFrame = requestAnimationFrame(update)
 	}
 
 	to(target, properties, options, offset = null) {
@@ -49,35 +99,31 @@ export default class Scene {
 	}
 
 	_animate() {
-		const update = (currentTime) => {
-			this.elapsedTime = (currentTime - this.startTime)
-			this.progress = Math.min(this.elapsedTime / this.totalDuration, 1)
+		this.moments.forEach(moment => {
+			const momentTime = Math.max(this.elapsedTime - moment.timings.delay, 0)
+			const momentProgress = Math.min(momentTime / moment.timings.totalDuration, 1)
 
-			this.moments.forEach(moment => {
-				const momentTime = this.elapsedTime - moment.timings.delay
-				const momentProgress = Math.min(momentTime / moment.timings.totalDuration, 1)
-
-				if (momentProgress < 1) {
-					moment.options.onUpdate?.()
-					moment.animations.forEach((animation, index) => {
-						const staggeredProgress = Math.min((momentTime - (moment.timings.stagger * index)) / moment.timings.duration, 1)
-						if (staggeredProgress > 0) {
-							const latest = moment.timings.easing(staggeredProgress)
-							animation.update(latest)
-						}
+			if (momentProgress > 0 && momentProgress < 1) {
+				moment.options.onUpdate?.()
+				moment.animations.forEach((animation, index) => {
+					const staggeredProgress = Math.min((momentTime - (moment.timings.stagger * index)) / moment.timings.duration, 1)
+					if (staggeredProgress > 0) {
+						const latest = moment.timings.easing(staggeredProgress)
+						animation.update(latest)
+					}
+				})
+			} else if (momentProgress <= 0 && this.rewinding) {
+				if (this.rewinding) {
+					moment.animations.forEach(animation => {
+						animation.update(0)
 					})
-				} else {
-					moment.options.onComplete?.()
 				}
-			})
-
-			if (this.progress < 1) {
-				requestAnimationFrame(update)
+			} else if (momentProgress >= 1) {
+				moment.animations.forEach(animation => {
+					animation.update(1)
+				})
 			}
-		}
-
-		this.startTime = performance.now()
-		requestAnimationFrame(update)
+		})
 	}
 
 	_setTargets(target) {
