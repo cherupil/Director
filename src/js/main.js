@@ -5,6 +5,11 @@ const pixelRatio = devicePixelRatio
 canvas.width = canvas.clientWidth * pixelRatio
 canvas.height = canvas.clientHeight * pixelRatio
 
+const webgl = document.getElementById('webgl')
+const glContext = webgl.getContext('webgl', {
+	powerPreference: 'high-performance'
+})
+
 const ctx = canvas.getContext('2d')
 
 const items = []
@@ -37,15 +42,20 @@ const update = () => {
 
 requestAnimationFrame(update)
 
+let scene
 
-window.addEventListener('click', _ => {
-	const scene = new Tempo.scene()
-	
-	scene.to(items[0], { x: (canvas.width / 3) * 2 }, { duration: 1, ease: 'easeOutExpo' })
-	scene.from(items[1], { x: (canvas.width / 3) * 2 }, { duration: 2, ease: 'easeOutExpo' })
-	scene.to(items[2], { x: (canvas.width / 3) * 2 }, { duration: 2, ease: 'easeOutExpo' }, 0)
+setTimeout(() => {
+	scene = new Tempo.scene()
+
+	scene.to(items[0], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 2, ease: 'easeOutExpo' })
+	scene.from(items[1], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 4, ease: 'easeOutExpo' }, 0.25)
+	scene.to(items[2], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 2, ease: 'easeOutExpo' })
 
 	scene.play()
+}, 500)
+
+window.addEventListener('click', _ => {
+	scene.pause()
 })
 
 

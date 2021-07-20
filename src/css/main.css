@@ -14,6 +14,12 @@ canvas {
 	width: 100vw;
 }
 
+canvas#webgl {
+	left: 0;
+	position: fixed;
+	top: 0;
+}
+
 video {
 	bottom: 0;
 	left: 0;

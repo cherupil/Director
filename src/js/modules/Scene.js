@@ -4,79 +4,79 @@ import Animation from './Animation.js'
 export default class Scene {
 	constructor() {
 		this.timeScale = 1000
+		this.startTime = 0
+		this.elapsedTime = 0
+		this.progress = 0
+		this.previousMomentDuration = 0
+		this.totalDuration = 0
 		this.moments = []
 	}
 
 	play() {
-		this.moments.forEach((moment, index) => {
-			let offset = 0
-			if (index > 0) {
-				if (moment.offset == null) {
-					offset = this.moments[index - 1].timings.totalDuration
-				} else {
-					offset = moment.offset * this.timeScale
-				}
-			}
-
-			this._animate(moment.animations, moment.timings, moment.options, offset)
-		})
+		this._animate()
 	}
 
 	to(target, properties, options, offset = null) {
 		const targets = this._setTargets(target)
-		const timings = this._setTimings(targets, options)
+		const timings = this._setTimings(targets, options, offset)
 
 		const animations = []
 		targets.forEach(target => {
 			animations.push(new Animation(target, properties, 'to'))
 		})
 
-		this._add(animations, timings, options, offset)
+		this._add(animations, timings, options)
 	}
 
 	from(target, properties, options, offset = null) {
 		const targets = this._setTargets(target)
-		const timings = this._setTimings(targets, options)
+		const timings = this._setTimings(targets, options, offset)
 
 		const animations = []
 		targets.forEach(target => {
 			animations.push(new Animation(target, properties, 'from'))
 		})
 
-		this._add(animations, timings, options, offset)
+		this._add(animations, timings, options)
 	}
 
-	_add(animations, timings, options, offset) {
+	_add(animations, timings, options) {
 		if (this.moments.length === 0) {
-			this.moments.push({ animations, timings, options, offset: 0 })
+			this.moments.push({ animations, timings, options })
 		} else {
-			this.moments.push({ animations, timings, options, offset })
+			this.moments.push({ animations, timings, options })
 		}
 	}
 
-	_animate(animations, timings, options, offset) {
-		function update(currentTime) {
-			const elapsedTime = (currentTime - startTime) - (timings.delay + offset)
-			const progress = Math.min(elapsedTime / timings.totalDuration, 1)
+	_animate() {
+		const update = (currentTime) => {
+			this.elapsedTime = (currentTime - this.startTime)
+			this.progress = Math.min(this.elapsedTime / this.totalDuration, 1)
 
-			animations.forEach((animation, index) => {
-				const staggeredProgress = Math.min((elapsedTime - (timings.stagger * index)) / timings.duration, 1)
-				if (staggeredProgress > 0) {
-					const latest = timings.easing(staggeredProgress)
-					animation.update(latest)
+			this.moments.forEach(moment => {
+				const momentTime = this.elapsedTime - moment.timings.delay
+				const momentProgress = Math.min(momentTime / moment.timings.totalDuration, 1)
+
+				if (momentProgress < 1) {
+					moment.options.onUpdate?.()
+					moment.animations.forEach((animation, index) => {
+						const staggeredProgress = Math.min((momentTime - (moment.timings.stagger * index)) / moment.timings.duration, 1)
+						if (staggeredProgress > 0) {
+							const latest = moment.timings.easing(staggeredProgress)
+							animation.update(latest)
+						}
+					})
+				} else {
+					moment.options.onComplete?.()
 				}
 			})
 
-			if (progress < 1) {
-				options.onUpdate?.()
+			if (this.progress < 1) {
 				requestAnimationFrame(update)
-			} else {
-				options.onComplete?.()
 			}
 		}
 
-		options.onStart?.()
-		const startTime = performance.now()
+		this.startTime = performance.now()
 		requestAnimationFrame(update)
 	}
 
@@ -91,14 +91,22 @@ export default class Scene {
 		return targets
 	}
 
-	_setTimings(targets, options) {
+	_setTimings(targets, options, offset) {
 		const timings = {}
 
 		timings.duration = options.duration * this.timeScale
-		timings.delay = options.delay ? (options.delay * this.timeScale) : 0
+		if (offset !== null) {
+			timings.offset = offset * this.timeScale
+		} else {
+			timings.offset = this.previousMomentDuration
+		}
+		timings.delay = options.delay ? (options.delay * this.timeScale) + timings.offset : timings.offset
 		timings.stagger = options.stagger ? (options.stagger * this.timeScale) : 0
 		timings.totalDuration = timings.duration + ((targets.length - 1) * timings.stagger)
 		timings.easing = Eases.get(options.ease)
+
+		this.previousMomentDuration = timings.totalDuration + timings.delay
+		this.totalDuration = Math.max(this.previousMomentDuration, this.totalDuration)
 
 		return timings
 	}
