@@ -92,9 +92,9 @@ export default class Scene {
 
 	_add(animations, timings, options) {
 		if (this.moments.length === 0) {
-			this.moments.push({ animations, timings, options })
+			this.moments.push({ animations, timings, options, complete: false })
 		} else {
-			this.moments.push({ animations, timings, options })
+			this.moments.push({ animations, timings, options, complete: false })
 		}
 	}
 
@@ -104,6 +104,7 @@ export default class Scene {
 			const momentProgress = Math.min(momentTime / moment.timings.totalDuration, 1)
 
 			if (momentProgress > 0 && momentProgress < 1) {
+				moment.complete = false
 				moment.options.onUpdate?.()
 				moment.animations.forEach((animation, index) => {
 					const staggeredProgress = Math.min((momentTime - (moment.timings.stagger * index)) / moment.timings.duration, 1)
@@ -123,10 +124,13 @@ export default class Scene {
 					})
 				}
 			} else if (momentProgress >= 1) {
-				moment.animations.forEach(animation => {
-					animation.update(1)
-				})
-				moment.options.onComplete?.()
+				if (!moment.complete) {
+					moment.animations.forEach(animation => {
+						animation.update(1)
+					})
+					moment.options.onComplete?.()
+					moment.complete = true
+				}
 			}
 		})
 	}
