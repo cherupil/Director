@@ -73,6 +73,8 @@ const crossBarRotation = {
 	angle: -Math.PI / 4
 }
 
+let scrollProgress = 0
+
 const draw = () => {
 	ctx.strokeStyle = ringColor
 	ctx.lineWidth = 1
@@ -141,49 +143,34 @@ const update = () => {
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 	draw()
 	requestAnimationFrame(update)
+	scene.setProgress(scrollProgress)
 }
 
 requestAnimationFrame(update)
 
 let scene
 
-setTimeout(() => {
-	scene = new Tempo.scene()
+scene = new Tempo.scene()
 
-	scene.to(circles, { scale: 32 }, { duration: 1.6, ease: 'easeOutExpo', stagger: 0.05, onComplete: () => { console.log('done') } })
-	scene.to(ring, { angle: Math.PI * 1.5 }, { duration: 1.6, ease: 'easeOutExpo' }, 0.4)
-	scene.to(lineTop, { end: (canvas.width / 5) * 2 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
-	scene.to(lineTop, { start: (canvas.width / 5) * 2 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
-	scene.to(lineBottom, { end: (canvas.width / 5) * 3 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
-	scene.to(lineBottom, { start: (canvas.width / 5) * 3 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
-	scene.to(lineLeft, { end: (canvas.height / 5) * 3 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
-	scene.to(lineLeft, { start: (canvas.height / 5) * 3 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
-	scene.to(lineRight, { end: (canvas.height / 5) * 2 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
-	scene.to(lineRight, { start: (canvas.height / 5) * 2 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
-	scene.to(crossBarRotation, { angle: Math.PI * 1.75 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
-	scene.to(crossBarX, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
-	scene.to(crossBarY, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
+scene.to(circles, { scale: 32 }, { duration: 2.4, ease: 'easeOutSpring', stagger: 0.05, onComplete: () => { console.log('done') } })
+scene.to(ring, { angle: Math.PI * 1.5 }, { duration: 1.6, ease: 'easeOutExpo' }, 0.4)
+scene.to(lineTop, { end: (canvas.width / 5) * 2 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
+scene.to(lineTop, { start: (canvas.width / 5) * 2 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
+scene.to(lineBottom, { end: (canvas.width / 5) * 3 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
+scene.to(lineBottom, { start: (canvas.width / 5) * 3 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
+scene.to(lineLeft, { end: (canvas.height / 5) * 3 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
+scene.to(lineLeft, { start: (canvas.height / 5) * 3 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
+scene.to(lineRight, { end: (canvas.height / 5) * 2 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
+scene.to(lineRight, { start: (canvas.height / 5) * 2 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
+scene.to(crossBarRotation, { angle: Math.PI * 1.75 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
+scene.to(crossBarX, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
+scene.to(crossBarY, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
 
-	//scene.play()
-}, 800)
+const content = document.querySelector('aside')
 
-const progressInput = document.getElementById('progress')
+const contentHeight = content.offsetHeight - window.outerHeight
 
-progressInput.addEventListener('input', event => {
-	console.log(event.target.value)
-	scene.setProgress(event.target.value)
+window.addEventListener('scroll', (event) => {
+	const scrollDistance = event.target.scrollingElement.scrollTop
+	scrollProgress = Math.min(Math.max(scrollDistance / contentHeight, 0), 1)
 })
-
-/*window.addEventListener('click', _ => {
-	if (scene.paused) {
-		if (scene.rewinding) {
-			scene.play()
-		} else {
-			scene.rewind()
-		}
-	} else {
-		scene.pause()
-	}
-})*/
-
-
