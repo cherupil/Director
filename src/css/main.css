@@ -20,8 +20,29 @@ canvas#webgl {
 	top: 0;
 }
 
-video {
-	bottom: 0;
-	left: 0;
-	position: absolute;
+input[type="range"] {
+	background-color: transparent;
+	left: 32px;
+	position: fixed;
+	bottom: 48px;
+	-webkit-appearance: none;
+	width: calc(100vw - 64px);
+	z-index: 3;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+	background-color: rgba(255,255,255,0.5);
+	border-radius: 2px;
+	height: 4px;
+	width: 100%;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+	background-color: white;
+	border-radius: 50%;
+	box-shadow: 0 0 4px 0 rgba(0,0,0,0.24), 0 0 8px 0 rgba(0,0,0,0.12);
+	height: 32px;
+	margin-top: -14px;
+	-webkit-appearance: none;
+	width: 32px;
 }

@@ -164,10 +164,17 @@ setTimeout(() => {
 	scene.to(crossBarX, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
 	scene.to(crossBarY, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
 
-	scene.play()
+	//scene.play()
 }, 800)
 
-window.addEventListener('click', _ => {
+const progressInput = document.getElementById('progress')
+
+progressInput.addEventListener('input', event => {
+	console.log(event.target.value)
+	scene.setProgress(event.target.value)
+})
+
+/*window.addEventListener('click', _ => {
 	if (scene.paused) {
 		if (scene.rewinding) {
 			scene.play()
@@ -177,6 +184,6 @@ window.addEventListener('click', _ => {
 	} else {
 		scene.pause()
 	}
-})
+})*/
 
 

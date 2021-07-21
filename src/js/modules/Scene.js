@@ -66,6 +66,17 @@ export default class Scene {
 		this.currentAnimationFrame = requestAnimationFrame(update)
 	}
 
+	setProgress(progress) {
+		this.progress = progress
+
+		const update = (currentTime) => {
+			this.elapsedTime = this.totalDuration * this.progress
+			this._animate()
+		}
+
+		this.currentAnimationFrame = requestAnimationFrame(update)
+	}
+
 	to(target, properties, options, offset = null) {
 		const targets = this._setTargets(target)
 		const timings = this._setTimings(targets, options, offset)
@@ -107,23 +118,22 @@ export default class Scene {
 				moment.complete = false
 				moment.options.onUpdate?.()
 				moment.animations.forEach((animation, index) => {
-					const staggeredProgress = Math.min((momentTime - (moment.timings.stagger * index)) / moment.timings.duration, 1)
+					const staggerTime = Math.max(momentTime - (moment.timings.stagger * index), 0)
+					const staggeredProgress = Math.min(staggerTime / moment.timings.duration, 1)
 					if (staggeredProgress > 0 && staggeredProgress < 1) {
 						const latest = moment.timings.easing(staggeredProgress)
 						animation.update(latest)
-					} else if (staggeredProgress <= 0 && this.rewinding) {
+					} else if (staggeredProgress === 0) {
 						animation.update(0)
-					} else if (staggeredProgress >= 1) {
+					} else if (staggeredProgress === 1) {
 						animation.update(1)
 					}
 				})
-			} else if (momentProgress <= 0 && this.rewinding) {
-				if (this.rewinding) {
-					moment.animations.forEach(animation => {
-						animation.update(0)
-					})
-				}
-			} else if (momentProgress >= 1) {
+			} else if (momentProgress === 0) {
+				moment.animations.forEach(animation => {
+					animation.update(0)
+				})
+			} else if (momentProgress === 1) {
 				if (!moment.complete) {
 					moment.animations.forEach(animation => {
 						animation.update(1)
