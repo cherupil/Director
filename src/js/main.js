@@ -12,24 +12,26 @@ const glContext = webgl.getContext('webgl', {
 
 const ctx = canvas.getContext('2d')
 
-const items = []
+const circles = []
 
 const colors = ['#FFE7E5', '#FFBDAF', '#E65F5C', '#E8FFEE', '#36EFB1', '#32D789', '#E8F4FF', '#6EE4FF', '#41C0EC', '#72FFF9', '#67E6E0', '#387D7A']
 
-for (var i = 0; i < 3; i++) {
-	items.push({
-		fill: colors[Math.floor(Math.random() * colors.length)],
-		x: canvas.width / 3,
-		y: (canvas.height / 4) * (i + 1),
-		scale: 32
-	})
+for (let i = 0; i < 3; i++) {
+	for (let j = 0; j < 3; j++) {
+		circles.push({
+			fill: colors[Math.floor(Math.random() * colors.length)],
+			x: (canvas.width / 4) * (j + 1),
+			y: (canvas.height / 4) * (i + 1),
+			scale: 0
+		})
+	}
 }
 
 const draw = () => {
-	items.forEach(item => {
-		ctx.fillStyle = item.fill
+	circles.forEach(circle => {
+		ctx.fillStyle = circle.fill
 		ctx.beginPath()
-		ctx.arc(item.x, item.y, item.scale, 0, Math.PI * 2)
+		ctx.arc(circle.x, circle.y, circle.scale, 0, Math.PI * 2)
 		ctx.fill()
 	})
 }
@@ -47,9 +49,7 @@ let scene
 setTimeout(() => {
 	scene = new Tempo.scene()
 
-	scene.to(items[0], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 2, ease: 'easeOutExpo', onComplete: () => { console.log('1st complete') } })
-	scene.from(items[1], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 4, ease: 'easeOutExpo', onComplete: () => { console.log('2nd complete') } }, 0.25)
-	scene.to(items[2], { x: (canvas.width / 3) * 2, scale: 0 }, { duration: 2, ease: 'easeOutExpo' })
+	scene.to(circles, { scale: 32 }, { duration: 1, ease: 'easeOutExpo', stagger: 0.05, onComplete: () => { console.log('done') } })
 
 	scene.play()
 }, 500)

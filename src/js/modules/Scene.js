@@ -107,9 +107,13 @@ export default class Scene {
 				moment.options.onUpdate?.()
 				moment.animations.forEach((animation, index) => {
 					const staggeredProgress = Math.min((momentTime - (moment.timings.stagger * index)) / moment.timings.duration, 1)
-					if (staggeredProgress > 0) {
+					if (staggeredProgress > 0 && staggeredProgress < 1) {
 						const latest = moment.timings.easing(staggeredProgress)
 						animation.update(latest)
+					} else if (staggeredProgress <= 0 && this.rewinding) {
+						animation.update(0)
+					} else if (staggeredProgress >= 1) {
+						animation.update(1)
 					}
 				})
 			} else if (momentProgress <= 0 && this.rewinding) {
@@ -122,6 +126,7 @@ export default class Scene {
 				moment.animations.forEach(animation => {
 					animation.update(1)
 				})
+				moment.options.onComplete?.()
 			}
 		})
 	}
