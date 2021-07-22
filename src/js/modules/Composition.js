@@ -164,6 +164,7 @@ export default class Composition {
 
 	_add(motifs, timings, options, direction) {
 		this.voices.push({ motifs, timings, options, direction, progress: 0, initialized: false, started: false, completed: false })
+		this.setProgress(0)
 	}
 
 	_setTargets(target) {

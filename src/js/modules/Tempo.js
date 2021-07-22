@@ -1,10 +1,8 @@
 import Eases from './Eases.js'
 import Animation from './Animation.js'
-import Scene from './Scene.js'
 import Composition from './Composition.js'
 
 export default class Tempo {
-	static scene = Scene
 	static composition = Composition
 
 	static to(target, properties, options) {

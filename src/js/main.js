@@ -185,8 +185,8 @@ timeline.to(crossBarRotation, { angle: Math.PI * 1.75, duration: 1.6, ease: 'exp
 timeline.to(crossBarX, { start: -96, end: 96, duration: 1.6, ease: 'expo.out' }, 1.2)
 timeline.to(crossBarY, { start: -96, end: 96, duration: 1.6, ease: 'expo.out' }, 1.2)
 timeline.from(ring, { angle: -Math.PI / 2, duration: 1.6, ease: 'expo.out' })
-timeline.to(circles, { scale: 0, duration: 2.4, ease: 'expo.out', stagger: 0.1 })
-*/
+timeline.to(circles, { scale: 0, duration: 2.4, ease: 'expo.out', stagger: 0.1 })*/
+
 //composition.play()
 //timeline.play()
 
