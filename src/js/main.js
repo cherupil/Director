@@ -168,6 +168,10 @@ scene.to(crossBarY, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo
 
 const content = document.querySelector('aside')
 
+const scrollMultiplier = 2
+
+content.style.height = `${scene.totalDuration * scrollMultiplier}px`
+
 const contentHeight = content.offsetHeight - window.outerHeight
 
 window.addEventListener('scroll', (event) => {
