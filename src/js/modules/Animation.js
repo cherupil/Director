@@ -2,14 +2,15 @@ export default class Animation {
 	constructor(target, properties, direction) {
 		this.target = target
 		this.properties = properties
+		this.direction = direction
 
 		this.propertyDeltas = []
 
-		this.setProperties(direction)
+		this.setProperties()
 	}
 
-	setProperties(direction) {
-		switch (direction) {
+	setProperties() {
+		switch (this.direction) {
 			case 'to':
 				for (const property in this.properties) {
 					this.propertyDeltas[property] = {

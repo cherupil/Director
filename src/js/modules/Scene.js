@@ -86,7 +86,7 @@ export default class Scene {
 			animations.push(new Animation(target, properties, 'to'))
 		})
 
-		this._add(animations, timings, options)
+		this._add(animations, timings, options, 'to')
 	}
 
 	from(target, properties, options, offset = null) {
@@ -98,14 +98,14 @@ export default class Scene {
 			animations.push(new Animation(target, properties, 'from'))
 		})
 
-		this._add(animations, timings, options)
+		this._add(animations, timings, options, 'from')
 	}
 
-	_add(animations, timings, options) {
+	_add(animations, timings, options, direction) {
 		if (this.moments.length === 0) {
-			this.moments.push({ animations, timings, options, complete: false })
+			this.moments.push({ animations, timings, options, direction, started: false, complete: false })
 		} else {
-			this.moments.push({ animations, timings, options, complete: false })
+			this.moments.push({ animations, timings, options, direction, started: false, complete: false })
 		}
 	}
 
@@ -115,6 +115,7 @@ export default class Scene {
 			const momentProgress = Math.min(momentTime / moment.timings.totalDuration, 1)
 
 			if (momentProgress > 0 && momentProgress < 1) {
+				moment.started = true
 				moment.complete = false
 				moment.options.onUpdate?.()
 				moment.animations.forEach((animation, index) => {

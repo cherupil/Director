@@ -1,4 +1,5 @@
 import Tempo from './modules/Tempo.js'
+import gsap from 'gsap'
 
 const canvas = document.getElementById('canvas')
 const pixelRatio = devicePixelRatio
@@ -23,7 +24,7 @@ for (let i = 0; i < 3; i++) {
 			fill: colors[Math.floor(Math.random() * colors.length)],
 			x: (canvas.width / 4) * (j + 1),
 			y: (canvas.height / 4) * (i + 1),
-			scale: 0
+			scale: 32
 		})
 	}
 }
@@ -143,38 +144,78 @@ const update = () => {
 	ctx.clearRect(0, 0, canvas.width, canvas.height)
 	draw()
 	requestAnimationFrame(update)
-	scene.setProgress(scrollProgress)
+	composition.setProgress(scrollProgress)
+	//timeline.progress(scrollProgress)
 }
 
 requestAnimationFrame(update)
 
-let scene
+let composition
 
-scene = new Tempo.scene()
+composition = new Tempo.composition()
+let timeline = new gsap.timeline()
 
-scene.to(circles, { scale: 32 }, { duration: 2.4, ease: 'easeOutSpring', stagger: 0.05, onComplete: () => { console.log('done') } })
-scene.to(ring, { angle: Math.PI * 1.5 }, { duration: 1.6, ease: 'easeOutExpo' }, 0.4)
-scene.to(lineTop, { end: (canvas.width / 5) * 2 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
-scene.to(lineTop, { start: (canvas.width / 5) * 2 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
-scene.to(lineBottom, { end: (canvas.width / 5) * 3 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
-scene.to(lineBottom, { start: (canvas.width / 5) * 3 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
-scene.to(lineLeft, { end: (canvas.height / 5) * 3 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
-scene.to(lineLeft, { start: (canvas.height / 5) * 3 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
-scene.to(lineRight, { end: (canvas.height / 5) * 2 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
-scene.to(lineRight, { start: (canvas.height / 5) * 2 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
-scene.to(crossBarRotation, { angle: Math.PI * 1.75 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
-scene.to(crossBarX, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
-scene.to(crossBarY, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
+composition.from(circles, { scale: 0 }, { duration: 2.4, ease: 'easeOutExpo', stagger: 0.1, onComplete: () => { console.log('done') } })
+composition.to(ring, { angle: Math.PI * 1.5 }, { duration: 1.6, ease: 'easeOutExpo' }, 0.4)
+composition.to(lineTop, { end: (canvas.width / 5) * 2 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
+composition.to(lineTop, { start: (canvas.width / 5) * 2 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
+composition.to(lineBottom, { end: (canvas.width / 5) * 3 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
+composition.to(lineBottom, { start: (canvas.width / 5) * 3 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
+composition.to(lineLeft, { end: (canvas.height / 5) * 3 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
+composition.to(lineLeft, { start: (canvas.height / 5) * 3 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
+composition.to(lineRight, { end: (canvas.height / 5) * 2 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
+composition.to(lineRight, { start: (canvas.height / 5) * 2 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
+composition.to(crossBarRotation, { angle: Math.PI * 1.75 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
+composition.to(crossBarX, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
+composition.to(crossBarY, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
+composition.from(ring, { angle: -Math.PI / 2 }, { duration: 1.6, ease: 'easeOutExpo' })
+composition.to(circles, { scale: 0 }, { duration: 2.4, ease: 'easeOutExpo', stagger: 0.1 })
+
+/*timeline.from(circles, { scale: 0, duration: 2.4, ease: 'expo.out', stagger: 0.1, onComplete: () => { console.log('done') } })
+timeline.to(ring, { angle: Math.PI * 1.5, duration: 1.6, ease: 'expo.out' }, 0.4)
+timeline.to(lineTop, { end: (canvas.width / 5) * 2, duration: 0.8, ease: 'expo.out' }, 1.2)
+timeline.to(lineTop, { start: (canvas.width / 5) * 2,duration: 0.8, ease: 'expo.out' }, 1)
+timeline.to(lineBottom, { end: (canvas.width / 5) * 3, duration: 0.8, ease: 'expo.out' }, 1.2)
+timeline.to(lineBottom, { start: (canvas.width / 5) * 3,duration: 0.8, ease: 'expo.out' }, 1)
+timeline.to(lineLeft, { end: (canvas.height / 5) * 3, duration: 0.8, ease: 'expo.out' }, 1.2)
+timeline.to(lineLeft, { start: (canvas.height / 5) * 3,duration: 0.8, ease: 'expo.out' }, 1)
+timeline.to(lineRight, { end: (canvas.height / 5) * 2, duration: 0.8, ease: 'expo.out' }, 1.2)
+timeline.to(lineRight, { start: (canvas.height / 5) * 2,duration: 0.8, ease: 'expo.out' }, 1)
+timeline.to(crossBarRotation, { angle: Math.PI * 1.75, duration: 1.6, ease: 'expo.out' }, 1.2)
+timeline.to(crossBarX, { start: -96, end: 96, duration: 1.6, ease: 'expo.out' }, 1.2)
+timeline.to(crossBarY, { start: -96, end: 96, duration: 1.6, ease: 'expo.out' }, 1.2)
+timeline.from(ring, { angle: -Math.PI / 2, duration: 1.6, ease: 'expo.out' })
+timeline.to(circles, { scale: 0, duration: 2.4, ease: 'expo.out', stagger: 0.1 })
+*/
+//composition.play()
+//timeline.play()
 
 const content = document.querySelector('aside')
-
-const scrollMultiplier = 2
-
-content.style.height = `${scene.totalDuration * scrollMultiplier}px`
 
 const contentHeight = content.offsetHeight - window.outerHeight
 
 window.addEventListener('scroll', (event) => {
 	const scrollDistance = event.target.scrollingElement.scrollTop
 	scrollProgress = Math.min(Math.max(scrollDistance / contentHeight, 0), 1)
+})
+
+window.addEventListener('click', () => {
+	if (composition.paused) {
+		if (composition.rewinding) {
+			composition.play()
+		} else {
+			composition.rewind()
+		}
+	} else {
+		composition.pause()
+	}
+	/*if (timeline.isActive) {
+		if (timeline.rewinding) {
+			timeline.resume()
+		} else {
+			timeline.reverse()
+		}
+	} else {
+		timeline.pause()
+	}*/
 })

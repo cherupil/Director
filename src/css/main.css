@@ -14,10 +14,10 @@ main {
 canvas {
 	flex-shrink: 0;
 	height: 50vw;
-	left: 50%;
+	left: 0;
 	position: fixed;
 	top: 50%;
-	transform: translate(-50%, -50%);
+	transform: translateY(-50%);
 	width: 50vw;
 }
 
