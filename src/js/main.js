@@ -23,23 +23,31 @@ const widthSegments = Math.floor(canvas.width / space)
 
 const pixels = []
 
-ctx.fillStyle = colors[5]
-
 for (let i = 0; i < heightSegments; i++) {
 	for (let j = 0; j < widthSegments; j++) {
 		pixels.push({
 			x: (space * j),
 			y: (space * i),
-			size
+			size,
+			colorLightness: 52
 		})
 	}
+}
+
+const randomPixels = []
+
+for (let i = 0; i < 50; i++) {
+	randomPixels.push(pixels[Math.floor(Math.random() * pixels.length)])
 }
 
 
 let scrollProgress = 0
 
+ctx.globalCompositeOperation = 'lighten'
+
 const draw = () => {
 	pixels.forEach(pixel => {
+		ctx.fillStyle = `hsl(152deg, 67%, ${pixel.colorLightness}%)`
 		ctx.fillRect(pixel.x + (size - pixel.size / 2), pixel.y + (size - pixel.size / 2), pixel.size, pixel.size)
 	})
 }
@@ -55,7 +63,8 @@ requestAnimationFrame(update)
 
 let composition = new Tempo.composition()
 
-composition.from(pixels, { size: 0 }, { duration: 1.6, ease: 'easeOutSine', stagger: 0.001 })
+composition.from(pixels, { size: 0 }, { duration: 0.8, ease: 'easeOutSine', stagger: 0.001 })
+composition.to(randomPixels, { size: 64, colorLightness: 100 }, { duration: 0.8, ease: 'easeOutSine', stagger: 0.01 })
 
 const scrollMultiplier = 1
 const content = document.querySelector('aside')
