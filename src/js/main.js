@@ -157,7 +157,7 @@ let timeline = new gsap.timeline()
 
 composition.from(circles, { scale: 0 }, { duration: 2.4, ease: 'easeOutExpo', stagger: 0.1, onComplete: () => { console.log('done') } })
 composition.to(ring, { angle: Math.PI * 1.5 }, { duration: 1.6, ease: 'easeOutExpo' }, 0.4)
-composition.to(lineTop, { end: (canvas.width / 5) * 2 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
+/*composition.to(lineTop, { end: (canvas.width / 5) * 2 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
 composition.to(lineTop, { start: (canvas.width / 5) * 2 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
 composition.to(lineBottom, { end: (canvas.width / 5) * 3 }, { duration: 0.8, ease: 'easeOutExpo' }, 1.2)
 composition.to(lineBottom, { start: (canvas.width / 5) * 3 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
@@ -167,9 +167,10 @@ composition.to(lineRight, { end: (canvas.height / 5) * 2 }, { duration: 0.8, eas
 composition.to(lineRight, { start: (canvas.height / 5) * 2 }, {duration: 0.8, ease: 'easeOutExpo' }, 1)
 composition.to(crossBarRotation, { angle: Math.PI * 1.75 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
 composition.to(crossBarX, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
-composition.to(crossBarY, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)
+composition.to(crossBarY, { start: -96, end: 96 }, { duration: 1.6, ease: 'easeOutExpo' }, 1.2)*/
 composition.from(ring, { angle: -Math.PI / 2 }, { duration: 1.6, ease: 'easeOutExpo' })
 composition.to(circles, { scale: 0 }, { duration: 2.4, ease: 'easeOutExpo', stagger: 0.1 })
+composition.from(circles, { scale: 32 }, { duration: 1.6, ease: 'easeOutExpo' })
 
 /*timeline.from(circles, { scale: 0, duration: 2.4, ease: 'expo.out', stagger: 0.1, onComplete: () => { console.log('done') } })
 timeline.to(ring, { angle: Math.PI * 1.5, duration: 1.6, ease: 'expo.out' }, 0.4)
@@ -190,32 +191,13 @@ timeline.to(circles, { scale: 0, duration: 2.4, ease: 'expo.out', stagger: 0.1 }
 //composition.play()
 //timeline.play()
 
+const scrollMultiplier = 1
 const content = document.querySelector('aside')
-
+content.style.height = `${scrollMultiplier * composition.duration}px`
 const contentHeight = content.offsetHeight - window.outerHeight
+
 
 window.addEventListener('scroll', (event) => {
 	const scrollDistance = event.target.scrollingElement.scrollTop
 	scrollProgress = Math.min(Math.max(scrollDistance / contentHeight, 0), 1)
-})
-
-window.addEventListener('click', () => {
-	if (composition.paused) {
-		if (composition.rewinding) {
-			composition.play()
-		} else {
-			composition.rewind()
-		}
-	} else {
-		composition.pause()
-	}
-	/*if (timeline.isActive) {
-		if (timeline.rewinding) {
-			timeline.resume()
-		} else {
-			timeline.reverse()
-		}
-	} else {
-		timeline.pause()
-	}*/
 })
