@@ -85,7 +85,7 @@ export default class Composition {
 		this.currentTime = this.duration * this.progress
 
 		this.voices.forEach((voice, index) => {
-			voice.progress = (this.currentTime - voice.timings.start) / voice.timings.duration
+			voice.progress = (this.currentTime - voice.timings.start) / voice.timings.totalDuration
 
 			if (voice.started && !voice.completed) {
 				voice.motifs.forEach((motif, index) => {
@@ -197,7 +197,8 @@ export default class Composition {
 
 		timings.start = delay
 		timings.end = delay + duration
-		timings.duration = duration
+		timings.duration = timeScaledDuration
+		timings.totalDuration = duration
 		timings.easing = Eases.get(options.ease)
 
 		this.previousVoiceDuration = timings.end
