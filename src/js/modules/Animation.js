@@ -4,7 +4,7 @@ export default class Animation {
 		this.properties = properties
 		this.direction = direction
 
-		this.propertyDeltas = []
+		this.propertyDeltas = {}
 
 		this.setProperties()
 	}

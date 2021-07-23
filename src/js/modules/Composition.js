@@ -88,6 +88,7 @@ export default class Composition {
 			voice.progress = (this.currentTime - voice.timings.start) / voice.timings.totalDuration
 
 			if (voice.started && !voice.completed) {
+				voice.options.onUpdate?.()
 				voice.motifs.forEach((motif, index) => {
 					const staggerTime = Math.max((this.currentTime - voice.timings.start) - (voice.timings.stagger * index), 0)
 					const staggerProgress = Math.min(staggerTime / voice.timings.duration, 1)
@@ -98,7 +99,8 @@ export default class Composition {
 
 			if (voice.progress > 0) {
 				if (!voice.started) {
-					if (index !== 0) {
+					voice.options.onStart?.()
+					if (voice.timings.start !== 0) {
 						voice.motifs.forEach(motif => {
 							motif.setProperties()
 						})
@@ -107,7 +109,7 @@ export default class Composition {
 				voice.started = true
 			} else {
 				if (voice.started && voice.direction === 'from') {
-					if (index !== 0) {
+					if (voice.timings.start !== 0) {
 						voice.motifs.forEach(motif => {
 							motif.update(1)
 						})
@@ -127,6 +129,7 @@ export default class Composition {
 
 			if (voice.progress >= 1) {
 				if (!voice.completed) {
+					voice.options.onComplete?.()
 					voice.motifs.forEach(motif => {
 						motif.update(1)
 					})

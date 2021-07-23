@@ -5,36 +5,148 @@
 	padding: 0;
 }
 
+:root {
+	--red-100: #FFE7E5;
+	--red-200: #FFBDAF;
+	--red-300: #E65F5C;
+	--red-400: #761111;
+	--red-500: #282524;
+	--green-100: #E8FFEE;
+	--green-200: #36EFB1;
+	--green-300: #32D789;
+	--green-400: #03330A;
+	--green-500: #242825;
+	--blue-100: #E8F4FF;
+	--blue-200: #6EE4FF;
+	--blue-300: #41C0EC;
+	--blue-400: #031F33;
+	--blue-500: #242528;
+	--grey-100: #72FFF9;
+	--grey-200: #67E6E0;
+	--grey-300: #387D7A;
+	--grey-400: #173332;
+	--grey-500: #242424;
+}
+
 main {
 	justify-content: flex-end;
 	background-color: #242528;
 	display: flex;
 }
 
-canvas {
-	flex-shrink: 0;
-	height: 100vh;
-	right: 0;
-	position: fixed;
-	top: 50%;
-	transform: translateY(-50%);
-	width: 50vw;
-}
-
 canvas#webgl {
+	height: 100vh;
 	left: 0;
 	position: fixed;
 	top: 0;
+	width: 100vw;
 }
 
-aside {
+section {
+	width: 100%;
+}
+
+.blank-section {
+	background-color: var(--green-100);
+	height: 100vh;
+	position: relative;
+}
+
+h1 {
+	color: var(--grey-400);
+	font-family: system-ui;
+	font-size: 144px;
+	font-weight: 700;
+	left: 50%;
+	letter-spacing: -4px;
+	line-height: 1;
+	max-width: 650px;
+	position: absolute;
+	text-align: center;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 1;
+}
+
+.sticky-wrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+
+.sticky-element {
+	bottom: 0;
+	display: flex;
+	position: sticky;
+}
+
+.images {
+	flex-shrink: 0;
+	height: 100vh;
+	perspective: 1000px;
+	position: relative;
 	width: 50vw;
 }
 
-aside p {
-	color: #E8FFEE;
+.image-item {
+	background-color: var(--green-300);
+	border-radius: 12px;
+	height: 300px;
+	left: calc(50% - 100px);
+	position: absolute;
+	top: calc(50% - 150px);
+	transform-origin: center center;
+	width: 200px;
+}
+
+.image-item:first-child {
+	background-color: var(--red-300);
+}
+
+.image-item:last-child {
+	background-color: var(--blue-300);
+}
+
+.copy {
+	margin-left: 8.33333%;
+	position: relative;
+	width: 33.33333%;
+}
+
+.copy-item {
+	position: absolute;
+	top: 40%;
+	width: 100%;
+}
+
+.copy-item h2 {
+	color: var(--green-100);
+	font-family: system-ui;
+	font-size: 48px;
+	font-weight: 700;
+	letter-spacing: -0.5px;
+	line-height: 1;
+}
+
+.copy-item h2:after {
+	background-image: linear-gradient(to right, var(--blue-300), var(--green-200));
+	border-radius: 2px;
+	content: '';
+	display: block;
+	height: 4px;
+	margin: 24px 0;
+	width: 48px;
+}
+
+.copy-item p {
+	color: var(--green-200);
+	font-family: system-ui;
 	font-size: 24px;
 	font-weight: 600;
 	line-height: 1.33333;
-	margin-bottom: 48px;
+}
+
+.copy-item p em {
+	color: var(--green-100);
+	font-style: normal;
 }
