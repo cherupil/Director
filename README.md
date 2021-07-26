@@ -1,2 +1,2 @@
-# Tempo
+# Director
 A basic tweening library
