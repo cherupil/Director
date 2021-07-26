@@ -48,7 +48,9 @@ const gradient = {
 	position: 50,
 	angle: 45,
 	scale: 1,
-	offset: 0
+	offset: 0,
+	intensity: 0.125,
+	falloff: 0.03125
 }
 
 
@@ -76,6 +78,8 @@ const update = () => {
 	root.style.setProperty('--gradient-angle', `${gradient.angle}deg`)
 	root.style.setProperty('--gradient-scale', gradient.scale)
 	root.style.setProperty('--gradient-offset', `${gradient.offset}px`)
+	root.style.setProperty('--gradient-intensity', gradient.intensity)
+	root.style.setProperty('--gradient-falloff', gradient.falloff)
 	requestAnimationFrame(update)
 	composition.setProgress(scrollProgress)
 }
@@ -97,6 +101,7 @@ copyItems.forEach((item, index) => {
 	}, 0.75 + index)
 })
 composition.from(imageItems, { scale: 0 }, { duration: 1, ease: 'easeOutExpo' }, 0)
+composition.from(gradient, { position: 100, intensity: 0, falloff: 0 }, { duration: 1, ease: 'easeOutExpo' }, 0)
 composition.to(imageItems[0], { translateX: -320, translateZ: -250 }, { duration: 1, ease: 'easeOutBack' }, 1)
 composition.to(imageItems[1], { translateX: 320, translateZ: -250 }, { duration: 1, ease: 'easeOutBack' }, 1)
 composition.to(imageItems[0], { translateX: -280 }, { duration: 1, ease: 'easeOutSine' }, 2)
