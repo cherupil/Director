@@ -1,9 +1,9 @@
 import Eases from './Eases.js'
 import Animation from './Animation.js'
-import Composition from './Composition.js'
+import Scene from './Scene.js'
 
-export default class Tempo {
-	static composition = Composition
+export default class Director {
+	static scene = Scene
 
 	static to(target, properties, options) {
 		const targets = this._setTargets(target)

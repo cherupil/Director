@@ -1,4 +1,4 @@
-import Tempo from './modules/Tempo.js'
+import Director from './modules/Director.js'
 
 const webgl = document.getElementById('webgl')
 const glContext = webgl.getContext('webgl', {
@@ -81,34 +81,34 @@ const update = () => {
 	root.style.setProperty('--gradient-intensity', gradient.intensity)
 	root.style.setProperty('--gradient-falloff', gradient.falloff)
 	requestAnimationFrame(update)
-	composition.setProgress(scrollProgress)
+	scene.setProgress(scrollProgress)
 }
 requestAnimationFrame(update)
 
-let composition = new Tempo.composition()
+let scene = new Director.scene()
 copyItems.forEach((item, index) => {
-	composition.to(item, { yOffset: -50 }, { 
+	scene.to(item, { yOffset: -50 }, { 
 		duration: 1, 
 		ease: 'linear'
 	})
-	composition.to(item, { opacity: 1 }, {
+	scene.to(item, { opacity: 1 }, {
 		duration: 0.25,
 		ease: 'linear'
 	}, 0 + index)
-	composition.to(item, { opacity: 0 }, {
+	scene.to(item, { opacity: 0 }, {
 		duration: 0.25,
 		ease: 'linear'
 	}, 0.75 + index)
 })
-composition.from(imageItems, { scale: 0 }, { duration: 1, ease: 'easeOutExpo' }, 0)
-composition.from(gradient, { position: 100, intensity: 0, falloff: 0 }, { duration: 1, ease: 'easeOutExpo' }, 0)
-composition.to(imageItems[0], { translateX: -320, translateZ: -250 }, { duration: 1, ease: 'easeOutBack' }, 1)
-composition.to(imageItems[1], { translateX: 320, translateZ: -250 }, { duration: 1, ease: 'easeOutBack' }, 1)
-composition.to(imageItems[0], { translateX: -280 }, { duration: 1, ease: 'easeOutSine' }, 2)
-composition.to(imageItems[1], { translateX: 280 }, { duration: 1, ease: 'easeOutSine' }, 2)
-composition.to(imageItems, { rotateY: 30, rotateX: 30 }, { duration: 1, ease: 'easeOutSine' }, 2)
-composition.to(gradient, { position: 25, angle: 30, offset: 4 }, { duration: 1, ease: 'easeOutSine' }, 2)
-composition.to(imageItems[2], { translateZ: 80}, { duration: 1, ease: 'easeOutSine' }, 2)
+scene.from(imageItems, { scale: 0 }, { duration: 1, ease: 'easeOutExpo' }, 0)
+scene.from(gradient, { position: 100, intensity: 0, falloff: 0 }, { duration: 1, ease: 'easeOutExpo' }, 0)
+scene.to(imageItems[0], { translateX: -320, translateZ: -250 }, { duration: 1, ease: 'easeOutBack' }, 1)
+scene.to(imageItems[1], { translateX: 320, translateZ: -250 }, { duration: 1, ease: 'easeOutBack' }, 1)
+scene.to(imageItems[0], { translateX: -280 }, { duration: 1, ease: 'easeOutSine' }, 2)
+scene.to(imageItems[1], { translateX: 280 }, { duration: 1, ease: 'easeOutSine' }, 2)
+scene.to(imageItems, { rotateY: 30, rotateX: 30 }, { duration: 1, ease: 'easeOutSine' }, 2)
+scene.to(gradient, { position: 25, angle: 30, offset: 4 }, { duration: 1, ease: 'easeOutSine' }, 2)
+scene.to(imageItems[2], { translateZ: 80}, { duration: 1, ease: 'easeOutSine' }, 2)
 
 
 const stickyElement = document.querySelector('.sticky-element')
@@ -125,8 +125,8 @@ observer.observe(stickyElement)
 
 const scrollMultiplier = 1
 const content = document.querySelector('.sticky-wrapper')
-content.style.height = `${(scrollMultiplier * composition.duration) + window.innerHeight}px`
-const scrollHeight = (scrollMultiplier * composition.duration)
+content.style.height = `${(scrollMultiplier * scene.duration) + window.innerHeight}px`
+const scrollHeight = (scrollMultiplier * scene.duration)
 
 const scrollListener = (event) => {
 	const scrollDistance = event.target.scrollingElement.scrollTop

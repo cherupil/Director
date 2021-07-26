@@ -1,7 +1,7 @@
 import Eases from './Eases.js'
 import Animation from './Animation.js'
 
-export default class Composition {
+export default class Scene {
 	constructor() {
 		this.timeScale = 1000
 		this.duration = 0
@@ -12,9 +12,9 @@ export default class Composition {
 		this.paused = false
 		this.rewinding = false
 		this.currentAnimationFrame = null
-		this.previousVoiceDuration = 0
+		this.previousActionDuration = 0
 
-		this.voices = []
+		this.actions = []
 	}
 
 	play() {
@@ -84,59 +84,59 @@ export default class Composition {
 	_animate() {
 		this.currentTime = this.duration * this.progress
 
-		this.voices.forEach((voice, index) => {
-			voice.progress = (this.currentTime - voice.timings.start) / voice.timings.totalDuration
+		this.actions.forEach((action, index) => {
+			action.progress = (this.currentTime - action.timings.start) / action.timings.totalDuration
 
-			if (voice.started && !voice.completed) {
-				voice.options.onUpdate?.()
-				voice.motifs.forEach((motif, index) => {
-					const staggerTime = Math.max((this.currentTime - voice.timings.start) - (voice.timings.stagger * index), 0)
-					const staggerProgress = Math.min(staggerTime / voice.timings.duration, 1)
-					const latest = voice.timings.easing(staggerProgress)
-					motif.update(latest)
+			if (action.started && !action.completed) {
+				action.options.onUpdate?.()
+				action.moments.forEach((moment, index) => {
+					const staggerTime = Math.max((this.currentTime - action.timings.start) - (action.timings.stagger * index), 0)
+					const staggerProgress = Math.min(staggerTime / action.timings.duration, 1)
+					const latest = action.timings.easing(staggerProgress)
+					moment.update(latest)
 				})
 			}
 
-			if (voice.progress > 0) {
-				if (!voice.started) {
-					voice.options.onStart?.()
-					if (voice.timings.start !== 0) {
-						voice.motifs.forEach(motif => {
-							motif.setProperties()
+			if (action.progress > 0) {
+				if (!action.started) {
+					action.options.onStart?.()
+					if (action.timings.start !== 0) {
+						action.moments.forEach(moment => {
+							moment.setProperties()
 						})
 					}
 				}
-				voice.started = true
+				action.started = true
 			} else {
-				if (voice.started && voice.direction === 'from') {
-					if (voice.timings.start !== 0) {
-						voice.motifs.forEach(motif => {
-							motif.update(1)
+				if (action.started && action.direction === 'from') {
+					if (action.timings.start !== 0) {
+						action.moments.forEach(moment => {
+							moment.update(1)
 						})
 					} else {
-						voice.motifs.forEach(motif => {
-							motif.update(0)
+						action.moments.forEach(moment => {
+							moment.update(0)
 						})
 					}
-				} else if (!voice.started && !voice.initialized && voice.direction === 'from') {
-					voice.motifs.forEach(motif => {
-						motif.update(0)
+				} else if (!action.started && !action.initialized && action.direction === 'from') {
+					action.moments.forEach(moment => {
+						moment.update(0)
 					})
-					voice.initialized = true
+					action.initialized = true
 				}
-				voice.started = false
+				action.started = false
 			}
 
-			if (voice.progress >= 1) {
-				if (!voice.completed) {
-					voice.options.onComplete?.()
-					voice.motifs.forEach(motif => {
-						motif.update(1)
+			if (action.progress >= 1) {
+				if (!action.completed) {
+					action.options.onComplete?.()
+					action.moments.forEach(moment => {
+						moment.update(1)
 					})
 				}
-				voice.completed = true
+				action.completed = true
 			} else {
-				voice.completed = false
+				action.completed = false
 			}
 		})
 	}
@@ -145,28 +145,28 @@ export default class Composition {
 		const targets = this._setTargets(target)
 		const timings = this._setTimings(targets, options, offset)
 
-		const motifs = []
+		const moments = []
 		targets.forEach(target => {
-			motifs.push(new Animation(target, properties, 'to'))
+			moments.push(new Animation(target, properties, 'to'))
 		})
 
-		this._add(motifs, timings, options, 'to')
+		this._add(moments, timings, options, 'to')
 	}
 
 	from(target, properties, options, offset = null) {
 		const targets = this._setTargets(target)
 		const timings = this._setTimings(targets, options, offset)
 
-		const motifs = []
+		const moments = []
 		targets.forEach(target => {
-			motifs.push(new Animation(target, properties, 'from'))
+			moments.push(new Animation(target, properties, 'from'))
 		})
 
-		this._add(motifs, timings, options, 'from')
+		this._add(moments, timings, options, 'from')
 	}
 
-	_add(motifs, timings, options, direction) {
-		this.voices.push({ motifs, timings, options, direction, progress: 0, initialized: false, started: false, completed: false })
+	_add(moments, timings, options, direction) {
+		this.actions.push({ moments, timings, options, direction, progress: 0, initialized: false, started: false, completed: false })
 		this.setProgress(0)
 	}
 
@@ -186,16 +186,16 @@ export default class Composition {
 
 		const timeScaledDuration = options.duration * this.timeScale
 
-		let voiceOffset = 0
+		let actionOffset = 0
 		if (offset !== null) {
-			voiceOffset = offset * this.timeScale
+			actionOffset = offset * this.timeScale
 		} else {
-			voiceOffset = this.previousVoiceDuration
+			actionOffset = this.previousActionDuration
 		}
 
 		timings.stagger = options.stagger ? (options.stagger * this.timeScale) : 0
 
-		const delay = options.delay ? (options.delay * this.timeScale) + voiceOffset : voiceOffset
+		const delay = options.delay ? (options.delay * this.timeScale) + actionOffset : actionOffset
 		const duration = timeScaledDuration + ((targets.length - 1) * timings.stagger)
 
 		timings.start = delay
@@ -204,8 +204,8 @@ export default class Composition {
 		timings.totalDuration = duration
 		timings.easing = Eases.get(options.ease)
 
-		this.previousVoiceDuration = timings.end
-		this.duration = Math.max(this.previousVoiceDuration, this.duration)
+		this.previousActionDuration = timings.end
+		this.duration = Math.max(this.previousActionDuration, this.duration)
 
 		return timings
 	}
