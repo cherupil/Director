@@ -36,7 +36,7 @@
 
 main {
 	justify-content: flex-end;
-	background-color: #242528;
+	background-color: var(--green-100);
 	display: flex;
 }
 
@@ -74,45 +74,49 @@ h1 {
 	z-index: 1;
 }
 
-.sticky-wrapper {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-end;
-}
-
-.sticky-element {
+.animated-element {
 	bottom: 0;
 	display: flex;
-	perspective: 100vw;
-	perspective-origin: 25vw 50vh;
-	position: sticky;
+	flex-direction: column;
 }
 
 .images {
 	flex-shrink: 0;
-	height: 100vh;
-	perspective: 50vw;
+	overflow: hidden;
+	padding: 24px 0;
 	position: relative;
-	width: 50vw;
+	width: 100vw;
+}
+
+.images-row {
+	display: flex;
+	will-change: transform;
+}
+
+.images-row:nth-of-type(1) {
+	margin-left: -500px;
+}
+
+.images-row:nth-of-type(3) {
+	margin-left: -250px;
 }
 
 .image-item {
 	background-color: var(--blue-300);
-	border-radius: 24px;
+	border-radius: 50%;
 	box-shadow: 0 1px 4px 0 rgba(0,0,0,0.16), 0 2px 16px 0 rgba(0,0,0,0.08);
-	height: 360px;
-	left: calc(50% - 100px);
-	position: absolute;
-	top: calc(50% - 150px);
+	flex-shrink: 0;
+	height: 150px;
+	margin: 8px;
 	transform-origin: center center;
 	transform-style: preserve-3d;
-	width: 200px;
+	width: 150px;
 	z-index: -1;
 }
 
 .image-item:before {
 	background-color: var(--blue-400);
-	border-radius: 16px;
+	border-radius: 50%;
 	box-shadow: 0 0 4px 0 rgba(0,0,0,0.48), 0 0 8px 0 rgba(0,0,0,0.24);
 	content: '';
 	display: block;
@@ -124,77 +128,40 @@ h1 {
 	width: calc(100% - 16px);
 }
 
-.image-item:after {
-	background-image: linear-gradient(var(--gradient-angle), rgba(255, 255, 255, var(--gradient-intensity)), rgba(255, 255, 255, var(--gradient-falloff)) var(--gradient-position), rgba(255, 255, 255, 0) var(--gradient-position), rgba(255, 255, 255, 0));
-	border-radius: 12px;
-	box-shadow: inset 0 0 16px 0 rgba(0,0,0,0.24), 0 0 32px 0 rgba(0,0,0,0.12);
-	content: '';
-	display: block;
-	height: calc(100% - 24px);
-	left: 12px;
-	position: absolute;
-	top: 12px;
-	transform: scale(var(--gradient-scale)) translateX(calc(2 * var(--gradient-offset))) translateY(calc(-2 * var(--gradient-offset)));
-	width: calc(100% - 24px);
-}
-
-.image-item:first-child {
+.image-item:nth-of-type(3n) {
 	background-color: var(--red-300);
 }
 
-.image-item:first-child:before {
-	background-color: var(--red-400);
-}
-
-.image-item:last-child {
+.image-item:nth-of-type(2n) {
 	background-color: var(--green-300);
 	z-index: 2;
 }
 
-.image-item:last-child:before {
-	background-color: var(--green-400);
-}
-
 .copy {
-	margin-left: 4.33333%;
+	margin-bottom: 48px;
 	position: relative;
-	width: 40%;
+	text-align: center;
 }
 
-.copy-item {
-	position: absolute;
-	top: 40%;
-	width: 100%;
-}
-
-.copy-item h2 {
-	color: var(--green-100);
+.copy h2 {
+	color: var(--grey-400);
 	font-family: system-ui;
-	font-size: 64px;
+	font-size: 72px;
 	font-weight: 700;
 	letter-spacing: -1px;
 	line-height: 1;
+	margin-bottom: 24px;
 }
 
-.copy-item h2:after {
-	background-image: linear-gradient(to right, var(--blue-300), var(--green-200));
-	border-radius: 2px;
-	content: '';
-	display: block;
-	height: 4px;
-	margin: 24px 0 20px;
-	width: 48px;
-}
-
-.copy-item p {
-	color: var(--green-200);
+.copy p {
+	color: var(--grey-300);
 	font-family: system-ui;
-	font-size: 32px;
+	font-size: 40px;
 	font-weight: 600;
 	line-height: 1.33333;
 }
 
-.copy-item p em {
-	color: var(--green-100);
+.copy em {
+	color: var(--grey-500);
 	font-style: normal;
 }

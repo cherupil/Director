@@ -1,9 +1,11 @@
 import Eases from './Eases.js'
 import Animation from './Animation.js'
 import Scene from './Scene.js'
+import Dolly from './Dolly.js'
 
 export default class Director {
 	static scene = Scene
+	static dolly = Dolly
 
 	static to(target, properties, options) {
 		const targets = this._setTargets(target)

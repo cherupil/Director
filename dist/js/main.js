@@ -1,1 +1,401 @@
-(()=>{var M=Object.defineProperty;var x=(a,t,e)=>t in a?M(a,t,{enumerable:!0,configurable:!0,writable:!0,value:e}):a[t]=e;var F=(a,t,e)=>(x(a,typeof t!="symbol"?t+"":t,e),e);var p=class{static get(t){switch(t){case"linear":return this._easeLinear;case"easeOut":return this._easeOutSine;case"easeOutExpo":return this._easeOutExpo;case"easeOutSpring":return this._easeOutSpring;case"easeOutBack":return this._easeOutBack;default:return this._easeLinear}}static _easeLinear(t){return t}static _easeOutSine(t){return Math.sin(t*(Math.PI/2))}static _easeOutExpo(t){return 1-Math.pow(2,-10*t)}static _easeOutSpring(t){let e=1,s=.3,r=s/(Math.PI*2)*(Math.asin(1/e)||0);return e*Math.pow(2,-10*t)*Math.sin((t-r)*(Math.PI*2)/s)+1}static _easeOutBack(t){let e=1.70158;return(t=t-1)*t*((e+1)*t+e)+1}};var u=class{constructor(t,e,s){this.target=t,this.properties=e,this.direction=s,this.propertyDeltas={},this.setProperties()}setProperties(){switch(this.direction){case"to":for(let t in this.properties)this.propertyDeltas[t]={start:this.target[t],delta:this.properties[t]-this.target[t]};break;case"from":for(let t in this.properties)this.propertyDeltas[t]={start:this.properties[t],delta:this.target[t]-this.properties[t]};break;default:break}}update(t){for(let e in this.properties)this.target[e]=this.propertyDeltas[e].start+t*this.propertyDeltas[e].delta}};var y=class{constructor(){this.timeScale=1e3,this.duration=0,this.startTime=0,this.currentTime=0,this.progress=0,this.paused=!1,this.rewinding=!1,this.currentAnimationFrame=null,this.previousActionDuration=0,this.actions=[]}play(){this.rewinding=!1,this.paused?this.startTime=performance.now()-this.duration*this.progress:this.startTime=performance.now(),this.paused=!1;let t=e=>{let s=e-this.startTime;this.progress=Math.min(s/this.duration,1),this._animate(),this.progress<1&&(this.currentAnimationFrame=requestAnimationFrame(t))};this.currentAnimationFrame=requestAnimationFrame(t)}pause(){this.paused=!0,cancelAnimationFrame(this.currentAnimationFrame)}rewind(){this.rewinding=!0,this.paused?this.startTime=performance.now()-this.duration*(1-this.progress):this.startTime=performance.now(),this.paused=!1;let t=e=>{let s=this.duration-(e-this.startTime);this.progress=Math.min(s/this.duration,1),this._animate(),this.progress>0&&(this.currentAnimationFrame=requestAnimationFrame(t))};this.currentAnimationFrame=requestAnimationFrame(t)}setProgress(t){this.progress=t;let e=s=>{let r=this.duration*this.progress;this._animate()};this.currentAnimationFrame=requestAnimationFrame(e)}_animate(){this.currentTime=this.duration*this.progress,this.actions.forEach((t,e)=>{t.progress=(this.currentTime-t.timings.start)/t.timings.totalDuration,t.started&&!t.completed&&(t.options.onUpdate?.(),t.moments.forEach((s,r)=>{let o=Math.max(this.currentTime-t.timings.start-t.timings.stagger*r,0),i=Math.min(o/t.timings.duration,1),n=t.timings.easing(i);s.update(n)})),t.progress>0?(t.started||(t.options.onStart?.(),t.timings.start!==0&&t.moments.forEach(s=>{s.setProperties()})),t.started=!0):(t.started&&t.direction==="from"?t.timings.start!==0?t.moments.forEach(s=>{s.update(1)}):t.moments.forEach(s=>{s.update(0)}):!t.started&&!t.initialized&&t.direction==="from"&&(t.moments.forEach(s=>{s.update(0)}),t.initialized=!0),t.started=!1),t.progress>=1?(t.completed||(t.options.onComplete?.(),t.moments.forEach(s=>{s.update(1)})),t.completed=!0):t.completed=!1})}to(t,e,s,r=null){let o=this._setTargets(t),i=this._setTimings(o,s,r),n=[];o.forEach(m=>{n.push(new u(m,e,"to"))}),this._add(n,i,s,"to")}from(t,e,s,r=null){let o=this._setTargets(t),i=this._setTimings(o,s,r),n=[];o.forEach(m=>{n.push(new u(m,e,"from"))}),this._add(n,i,s,"from")}_add(t,e,s,r){this.actions.push({moments:t,timings:e,options:s,direction:r,progress:0,initialized:!1,started:!1,completed:!1}),this.setProgress(0)}_setTargets(t){let e=null;return Array.isArray(t)?e=t:e=[t],e}_setTimings(t,e,s){let r={},o=e.duration*this.timeScale,i=0;s!==null?i=s*this.timeScale:i=this.previousActionDuration,r.stagger=e.stagger?e.stagger*this.timeScale:0;let n=e.delay?e.delay*this.timeScale+i:i,m=o+(t.length-1)*r.stagger;return r.start=n,r.end=n+m,r.duration=o,r.totalDuration=m,r.easing=p.get(e.ease),this.previousActionDuration=r.end,this.duration=Math.max(this.previousActionDuration,this.duration),r}};var f=class{static to(t,e,s){let r=this._setTargets(t),o=this._setTimings(r,s),i=[];r.forEach(n=>{i.push(new u(n,e,"to"))}),this._animate(i,o,s)}static from(t,e,s){let r=this._setTargets(t),o=this._setTimings(r,s),i=[];r.forEach(n=>{i.push(new u(n,e,"from"))}),this._animate(i,o,s)}static _animate(t,e,s){function r(i){let n=i-o-e.delay,m=Math.min(n/e.totalDuration,1);t.forEach((S,D)=>{let E=Math.min((n-e.stagger*D)/e.duration,1);if(E>0){let P=e.easing(E);S.update(P)}}),m<1?(s.onUpdate?.(),requestAnimationFrame(r)):s.onComplete?.()}s.onStart?.();let o=performance.now();requestAnimationFrame(r)}static _setTargets(t){let e=null;return Array.isArray(t)?e=t:e=[t],e}static _setTimings(t,e){let s=1e3,r={};return r.duration=e.duration*s,r.delay=e.delay?e.delay*s:0,r.stagger=e.stagger?e.stagger*s:0,r.totalDuration=r.duration+(t.length-1)*r.stagger,r.easing=p.get(e.ease),r}};F(f,"scene",y);var X=document.getElementById("webgl"),J=X.getContext("webgl",{powerPreference:"high-performance"});var d=[];d.push({yOffset:50,opacity:0});d.push({yOffset:50,opacity:0});d.push({yOffset:50,opacity:0});var l=[];l.push({scale:1,rotateY:0,rotateX:0,translateX:0,translateZ:0});l.push({scale:1,rotateY:0,rotateX:0,translateX:0,translateZ:0});l.push({scale:1,rotateY:0,rotateX:0,translateX:0,translateZ:0});var h={position:50,angle:45,scale:1,offset:0,intensity:.125,falloff:.03125},q=document.querySelectorAll(".copy-item"),k=document.querySelectorAll(".image-item"),v=document.querySelector(".images"),g=document.documentElement,A=0,_=()=>{v.style.transform=`rotateY(${l[0].rotateY}deg) rotateX(${l[0].rotateX}deg)`,k.forEach((a,t)=>{a.style.transform=`translateZ(${l[t].translateZ}px) translateX(${l[t].translateX}px) scale(${l[t].scale})`}),q.forEach((a,t)=>{a.style.opacity=d[t].opacity,a.style.transform=`translateY(${d[t].yOffset}px)`}),g.style.setProperty("--gradient-position",`${h.position}%`),g.style.setProperty("--gradient-angle",`${h.angle}deg`),g.style.setProperty("--gradient-scale",h.scale),g.style.setProperty("--gradient-offset",`${h.offset}px`),g.style.setProperty("--gradient-intensity",h.intensity),g.style.setProperty("--gradient-falloff",h.falloff),requestAnimationFrame(_),c.setProgress(A)};requestAnimationFrame(_);var c=new f.scene;d.forEach((a,t)=>{c.to(a,{yOffset:-50},{duration:1,ease:"linear"}),c.to(a,{opacity:1},{duration:.25,ease:"linear"},0+t),c.to(a,{opacity:0},{duration:.25,ease:"linear"},.75+t)});c.from(l,{scale:0},{duration:1,ease:"easeOutExpo"},0);c.from(h,{position:100,intensity:0,falloff:0},{duration:1,ease:"easeOutExpo"},0);c.to(l[0],{translateX:-320,translateZ:-250},{duration:1,ease:"easeOutBack"},1);c.to(l[1],{translateX:320,translateZ:-250},{duration:1,ease:"easeOutBack"},1);c.to(l[0],{translateX:-280},{duration:1,ease:"easeOutSine"},2);c.to(l[1],{translateX:280},{duration:1,ease:"easeOutSine"},2);c.to(l,{rotateY:30,rotateX:30},{duration:1,ease:"easeOutSine"},2);c.to(h,{position:25,angle:30,offset:4},{duration:1,ease:"easeOutSine"},2);c.to(l[2],{translateZ:80},{duration:1,ease:"easeOutSine"},2);var $=document.querySelector(".sticky-element"),b=new IntersectionObserver(a=>{a.forEach(t=>{t.isIntersecting?window.addEventListener("scroll",O):window.removeEventListener("scroll",O)})},{threshold:1});b.observe($);var T=1,w=document.querySelector(".sticky-wrapper");w.style.height=`${T*c.duration+window.innerHeight}px`;var I=T*c.duration,O=a=>{let e=a.target.scrollingElement.scrollTop-w.offsetTop;A=Math.min(Math.max(e/I,0),1)};})();
+(() => {
+  var __defProp = Object.defineProperty;
+  var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+  var __publicField = (obj, key, value) => {
+    __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+    return value;
+  };
+
+  // src/js/modules/Eases.js
+  var Eases = class {
+    static get(key) {
+      switch (key) {
+        case "linear":
+          return this._easeLinear;
+        case "easeOut":
+          return this._easeOutSine;
+        case "easeOutExpo":
+          return this._easeOutExpo;
+        case "easeOutSpring":
+          return this._easeOutSpring;
+        case "easeOutBack":
+          return this._easeOutBack;
+        default:
+          return this._easeLinear;
+      }
+    }
+    static _easeLinear(p) {
+      return p;
+    }
+    static _easeOutSine(p) {
+      return Math.sin(p * (Math.PI / 2));
+    }
+    static _easeOutExpo(p) {
+      return 1 - Math.pow(2, -10 * p);
+    }
+    static _easeOutSpring(p) {
+      const p1 = 1;
+      const p2 = 0.3;
+      const p3 = p2 / (Math.PI * 2) * (Math.asin(1 / p1) || 0);
+      return p1 * Math.pow(2, -10 * p) * Math.sin((p - p3) * (Math.PI * 2) / p2) + 1;
+    }
+    static _easeOutBack(p) {
+      const p1 = 1.70158;
+      return (p = p - 1) * p * ((p1 + 1) * p + p1) + 1;
+    }
+  };
+
+  // src/js/modules/Animation.js
+  var Animation = class {
+    constructor(target, properties, direction) {
+      this.target = target;
+      this.properties = properties;
+      this.direction = direction;
+      this.propertyDeltas = {};
+      this.setProperties();
+    }
+    setProperties() {
+      switch (this.direction) {
+        case "to":
+          for (const property in this.properties) {
+            this.propertyDeltas[property] = {
+              start: this.target[property],
+              delta: this.properties[property] - this.target[property]
+            };
+          }
+          break;
+        case "from":
+          for (const property in this.properties) {
+            this.propertyDeltas[property] = {
+              start: this.properties[property],
+              delta: this.target[property] - this.properties[property]
+            };
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    update(progress) {
+      for (const property in this.properties) {
+        this.target[property] = this.propertyDeltas[property].start + progress * this.propertyDeltas[property].delta;
+      }
+    }
+  };
+
+  // src/js/modules/Scene.js
+  var Scene = class {
+    constructor() {
+      this.timeScale = 1e3;
+      this.duration = 0;
+      this.startTime = 0;
+      this.currentTime = 0;
+      this.progress = 0;
+      this.paused = false;
+      this.rewinding = false;
+      this.currentAnimationFrame = null;
+      this.previousActionDuration = 0;
+      this.actions = [];
+    }
+    play() {
+      this.rewinding = false;
+      if (this.paused) {
+        this.startTime = performance.now() - this.duration * this.progress;
+      } else {
+        this.startTime = performance.now();
+      }
+      this.paused = false;
+      const update2 = (currentTime) => {
+        const elapsedTime = currentTime - this.startTime;
+        this.progress = Math.min(elapsedTime / this.duration, 1);
+        this._animate();
+        if (this.progress < 1) {
+          this.currentAnimationFrame = requestAnimationFrame(update2);
+        }
+      };
+      this.currentAnimationFrame = requestAnimationFrame(update2);
+    }
+    pause() {
+      this.paused = true;
+      cancelAnimationFrame(this.currentAnimationFrame);
+    }
+    rewind() {
+      this.rewinding = true;
+      if (this.paused) {
+        this.startTime = performance.now() - this.duration * (1 - this.progress);
+      } else {
+        this.startTime = performance.now();
+      }
+      this.paused = false;
+      const update2 = (currentTime) => {
+        const elapsedTime = this.duration - (currentTime - this.startTime);
+        this.progress = Math.min(elapsedTime / this.duration, 1);
+        this._animate();
+        if (this.progress > 0) {
+          this.currentAnimationFrame = requestAnimationFrame(update2);
+        }
+      };
+      this.currentAnimationFrame = requestAnimationFrame(update2);
+    }
+    setProgress(progress) {
+      this.progress = progress;
+      const update2 = (currentTime) => {
+        const elapsedTime = this.duration * this.progress;
+        this._animate();
+      };
+      this.currentAnimationFrame = requestAnimationFrame(update2);
+    }
+    _animate() {
+      this.currentTime = this.duration * this.progress;
+      this.actions.forEach((action, index) => {
+        action.progress = (this.currentTime - action.timings.start) / action.timings.totalDuration;
+        if (action.started && !action.completed) {
+          action.options.onUpdate?.();
+          action.moments.forEach((moment, index2) => {
+            const staggerTime = Math.max(this.currentTime - action.timings.start - action.timings.stagger * index2, 0);
+            const staggerProgress = Math.min(staggerTime / action.timings.duration, 1);
+            const latest = action.timings.easing(staggerProgress);
+            moment.update(latest);
+          });
+        }
+        if (action.progress > 0) {
+          if (!action.started) {
+            action.options.onStart?.();
+            if (action.timings.start !== 0) {
+              action.moments.forEach((moment) => {
+                moment.setProperties();
+              });
+            }
+          }
+          action.started = true;
+        } else {
+          if (action.started && action.direction === "from") {
+            if (action.timings.start !== 0) {
+              action.moments.forEach((moment) => {
+                moment.update(1);
+              });
+            } else {
+              action.moments.forEach((moment) => {
+                moment.update(0);
+              });
+            }
+          } else if (!action.started && !action.initialized && action.direction === "from") {
+            action.moments.forEach((moment) => {
+              moment.update(0);
+            });
+            action.initialized = true;
+          }
+          action.started = false;
+        }
+        if (action.progress >= 1) {
+          if (!action.completed) {
+            action.options.onComplete?.();
+            action.moments.forEach((moment) => {
+              moment.update(1);
+            });
+          }
+          action.completed = true;
+        } else {
+          action.completed = false;
+        }
+      });
+    }
+    to(target, properties, options, offset = null) {
+      const targets = this._setTargets(target);
+      const timings = this._setTimings(targets, options, offset);
+      const moments = [];
+      targets.forEach((target2) => {
+        moments.push(new Animation(target2, properties, "to"));
+      });
+      this._add(moments, timings, options, "to");
+    }
+    from(target, properties, options, offset = null) {
+      const targets = this._setTargets(target);
+      const timings = this._setTimings(targets, options, offset);
+      const moments = [];
+      targets.forEach((target2) => {
+        moments.push(new Animation(target2, properties, "from"));
+      });
+      this._add(moments, timings, options, "from");
+    }
+    _add(moments, timings, options, direction) {
+      this.actions.push({ moments, timings, options, direction, progress: 0, initialized: false, started: false, completed: false });
+      this.setProgress(0);
+    }
+    _setTargets(target) {
+      let targets = null;
+      if (Array.isArray(target)) {
+        targets = target;
+      } else {
+        targets = [target];
+      }
+      return targets;
+    }
+    _setTimings(targets, options, offset) {
+      const timings = {};
+      const timeScaledDuration = options.duration * this.timeScale;
+      let actionOffset = 0;
+      if (offset !== null) {
+        actionOffset = offset * this.timeScale;
+      } else {
+        actionOffset = this.previousActionDuration;
+      }
+      timings.stagger = options.stagger ? options.stagger * this.timeScale : 0;
+      const delay = options.delay ? options.delay * this.timeScale + actionOffset : actionOffset;
+      const duration = timeScaledDuration + (targets.length - 1) * timings.stagger;
+      timings.start = delay;
+      timings.end = delay + duration;
+      timings.duration = timeScaledDuration;
+      timings.totalDuration = duration;
+      timings.easing = Eases.get(options.ease);
+      this.previousActionDuration = timings.end;
+      this.duration = Math.max(this.previousActionDuration, this.duration);
+      return timings;
+    }
+  };
+
+  // src/js/modules/Dolly.js
+  var Dolly = class {
+    constructor(element2, scene2, options = {}) {
+      this.element = element2;
+      this.scene = scene2;
+      this.options = options;
+      this.observer = null;
+      this.progress = 0;
+      this.scrollDistance = 0;
+      this.scrollPosition = 0;
+      if (this.options.pinned) {
+        this.threshold = 1;
+        this.offset = this.element.parentElement.offsetTop;
+        this.scrollHeight = this.scene.duration;
+        this._scrollListener = this._pinnedScrollListener.bind(this);
+        this._setScrollHeight();
+      } else {
+        this.threshold = 0;
+        this.offset = this.element.offsetTop;
+        this.viewportHeight = window.innerHeight;
+        this.scrollHeight = this.element.getBoundingClientRect().height + this.offset;
+        this._scrollListener = this._defaultScrollListener.bind(this);
+      }
+      this._createObserver();
+    }
+    _setScrollHeight() {
+      this.element.parentElement.style.height = `${this.scrollHeight + window.innerHeight}px`;
+    }
+    _defaultScrollListener(event) {
+      this.scrollDistance = event.target.scrollingElement.scrollTop;
+      this.scrollPosition = this.scrollDistance + this.viewportHeight - this.offset;
+      this.progress = Math.min(Math.max(this.scrollPosition / this.scrollHeight, 0), 1);
+    }
+    _pinnedScrollListener(event) {
+      this.scrollDistance = event.target.scrollingElement.scrollTop;
+      this.scrollPosition = this.scrollDistance - this.offset;
+      this.progress = Math.min(Math.max(this.scrollPosition / this.scrollHeight, 0), 1);
+    }
+    _createObserver() {
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            window.addEventListener("scroll", this._scrollListener);
+          } else {
+            window.removeEventListener("scroll", this._scrollListener);
+          }
+        });
+      }, { threshold: this.threshold });
+      this.observer.observe(this.element);
+    }
+  };
+
+  // src/js/modules/Director.js
+  var Director = class {
+    static to(target, properties, options) {
+      const targets = this._setTargets(target);
+      const timings = this._setTimings(targets, options);
+      const animations = [];
+      targets.forEach((target2) => {
+        animations.push(new Animation(target2, properties, "to"));
+      });
+      this._animate(animations, timings, options);
+    }
+    static from(target, properties, options) {
+      const targets = this._setTargets(target);
+      const timings = this._setTimings(targets, options);
+      const animations = [];
+      targets.forEach((target2) => {
+        animations.push(new Animation(target2, properties, "from"));
+      });
+      this._animate(animations, timings, options);
+    }
+    static _animate(animations, timings, options) {
+      function update2(currentTime) {
+        const elapsedTime = currentTime - startTime - timings.delay;
+        const progress = Math.min(elapsedTime / timings.totalDuration, 1);
+        animations.forEach((animation, index) => {
+          const staggeredProgress = Math.min((elapsedTime - timings.stagger * index) / timings.duration, 1);
+          if (staggeredProgress > 0) {
+            const latest = timings.easing(staggeredProgress);
+            animation.update(latest);
+          }
+        });
+        if (progress < 1) {
+          options.onUpdate?.();
+          requestAnimationFrame(update2);
+        } else {
+          options.onComplete?.();
+        }
+      }
+      options.onStart?.();
+      const startTime = performance.now();
+      requestAnimationFrame(update2);
+    }
+    static _setTargets(target) {
+      let targets = null;
+      if (Array.isArray(target)) {
+        targets = target;
+      } else {
+        targets = [target];
+      }
+      return targets;
+    }
+    static _setTimings(targets, options) {
+      const timeScale = 1e3;
+      const timings = {};
+      timings.duration = options.duration * timeScale;
+      timings.delay = options.delay ? options.delay * timeScale : 0;
+      timings.stagger = options.stagger ? options.stagger * timeScale : 0;
+      timings.totalDuration = timings.duration + (targets.length - 1) * timings.stagger;
+      timings.easing = Eases.get(options.ease);
+      return timings;
+    }
+  };
+  __publicField(Director, "scene", Scene);
+  __publicField(Director, "dolly", Dolly);
+
+  // src/js/main.js
+  var webgl = document.getElementById("webgl");
+  var glContext = webgl.getContext("webgl", {
+    powerPreference: "high-performance"
+  });
+  var rowItems = [];
+  for (let i = 0; i < 3; i++) {
+    rowItems.push({
+      translateX: 0
+    });
+  }
+  var imageRows = document.querySelectorAll(".images-row");
+  var root = document.documentElement;
+  var update = () => {
+    imageRows.forEach((row, index) => {
+      row.style.transform = `translateX(${rowItems[index].translateX}px)`;
+    });
+    requestAnimationFrame(update);
+    scene.setProgress(dolly.progress);
+  };
+  requestAnimationFrame(update);
+  var scene = new Director.scene();
+  scene.to(rowItems[0], { translateX: 500 }, { duration: 1, ease: "linear" });
+  scene.to(rowItems[1], { translateX: -500 }, { duration: 1, ease: "linear" }, 0);
+  scene.to(rowItems[2], { translateX: 250 }, { duration: 1, ease: "linear" }, 0);
+  var element = document.querySelector(".animated-element");
+  var dolly = new Director.dolly(element, scene);
+})();
