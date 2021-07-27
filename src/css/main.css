@@ -74,6 +74,41 @@ h1 {
 	z-index: 1;
 }
 
+.ball {
+	background-color: var(--blue-300);
+	border-radius: 50%;
+	display: inline-block;
+	height: 50px;
+	left: 48px;
+	position: absolute;
+	top: 48px;
+	width: 50px;
+}
+
+.ball:nth-of-type(2) {
+	top: 148px;
+}
+
+.ball:nth-of-type(3) {
+	top: 248px;
+}
+
+.ball:nth-of-type(4) {
+	top: 348px;
+}
+
+.ball:nth-of-type(5) {
+	top: 448px;
+}
+
+.ball:nth-of-type(6) {
+	top: 548px;
+}
+
+.ball:nth-of-type(7) {
+	top: 648px;
+}
+
 .animated-element {
 	bottom: 0;
 	display: flex;

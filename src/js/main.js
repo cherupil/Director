@@ -15,11 +15,24 @@ for (let i = 0; i < 3; i++) {
 	})
 }
 
+const easeBalls = []
+
+for (let i = 0; i < 7; i++) {
+	easeBalls.push({
+		translateX: 0
+	})
+}
+
 const imageRows = document.querySelectorAll('.images-row')
+
+const easeBallElements = document.querySelectorAll('.ball')
 
 const root = document.documentElement
 
 const update = () => {
+	easeBallElements.forEach((ball, index) => {
+		ball.style.transform = `translateX(${easeBalls[index].translateX}px)`
+	})
 	imageRows.forEach((row, index) => {
 		row.style.transform = `translateX(${rowItems[index].translateX}px)`
 	})
@@ -27,6 +40,16 @@ const update = () => {
 	scene.setProgress(dolly.progress)
 }
 requestAnimationFrame(update)
+
+window.addEventListener('click', () => {
+	Director.to(easeBalls[0], { translateX: 1200 }, { duration: 2, ease: 'linear' })
+	Director.to(easeBalls[1], { translateX: 1200 }, { duration: 2, ease: 'easeInOutSine' })
+	Director.to(easeBalls[2], { translateX: 1200 }, { duration: 2, ease: 'easeInOutQuad' })
+	Director.to(easeBalls[3], { translateX: 1200 }, { duration: 2, ease: 'easeInOutCubic' })
+	Director.to(easeBalls[4], { translateX: 1200 }, { duration: 2, ease: 'easeInOutQuart' })
+	Director.to(easeBalls[5], { translateX: 1200 }, { duration: 2, ease: 'easeInOutQuint' })
+	Director.to(easeBalls[6], { translateX: 1200 }, { duration: 2, ease: 'easeInOutExpo' })
+})
 
 let scene = new Director.scene()
 
