@@ -4,9 +4,6 @@ import Scene from './Scene.js'
 import Dolly from './Dolly.js'
 
 export default class Director {
-	static scene = Scene
-	static dolly = Dolly
-
 	static to(target, properties, options) {
 		const targets = this._setTargets(target)
 		const timings = this._setTimings(targets, options)
@@ -81,3 +78,6 @@ export default class Director {
 		return timings
 	}
 }
+
+Director.scene = Scene
+Director.dolly = Dolly
