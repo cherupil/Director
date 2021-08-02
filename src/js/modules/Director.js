@@ -5,24 +5,40 @@ import Dolly from './Dolly.js'
 
 export default class Director {
 	static to(target, properties, options) {
-		const targets = this._setTargets(target)
+		let isDOM = false
+		let input = target
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+			isDOM = true
+			if (target instanceof window.NodeList) {
+				input = [...target]
+			}
+		}
+		const targets = this._setTargets(input)
 		const timings = this._setTimings(targets, options)
 
 		const animations = []
 		targets.forEach(target => {
-			animations.push(new Animation(target, properties, 'to'))
+			animations.push(new Animation(target, properties, 'to', isDOM))
 		})
 
 		this._animate(animations, timings, options)
 	}
 
 	static from(target, properties, options) {
+		let isDOM = false
+		let input = target
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+			isDOM = true
+			if (target instanceof window.NodeList) {
+				input = [...target]
+			}
+		}
 		const targets = this._setTargets(target)
 		const timings = this._setTimings(targets, options)
 
 		const animations = []
 		targets.forEach(target => {
-			animations.push(new Animation(target, properties, 'from'))
+			animations.push(new Animation(target, properties, 'from', isDOM))
 		})
 
 		this._animate(animations, timings, options)

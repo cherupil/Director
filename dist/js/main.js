@@ -1,1 +1,515 @@
-(()=>{var c=class{static get(t){switch(t){case"linear":return this._easeLinear;case"easeInSine":return this._easeInSine;case"easeOutSine":return this._easeOutSine;case"easeInOutSine":return this._easeInOutSine;case"easeInQuad":return this._easeInQuad;case"easeOutQuad":return this._easeOutQuad;case"easeInOutQuad":return this._easeInOutQuad;case"easeInCubic":return this._easeInCubic;case"easeOutCubic":return this._easeOutCubic;case"easeInOutCubic":return this._easeInOutCubic;case"easeInQuart":return this._easeInQuartic;case"easeOutQuart":return this._easeOutQuartic;case"easeInOutQuart":return this._easeInOutQuartic;case"easeInQuint":return this._easeInQuintic;case"easeOutQuint":return this._easeOutQuintic;case"easeInOutQuint":return this._easeInOutQuintic;case"easeInExpo":return this._easeInExpo;case"easeOutExpo":return this._easeOutExpo;case"easeInOutExpo":return this._easeInOutExpo;case"easeOutSpring":return this._easeOutSpring;case"easeOutBack":return this._easeOutBack;default:return this._easeLinear}}static _easeLinear(t){return t}static _easeInSine(t){return-Math.cos(t*(Math.PI/2))+1}static _easeOutSine(t){return Math.sin(t*(Math.PI/2))}static _easeInOutSine(t){return-.5*(Math.cos(Math.PI*t)-1)}static _easeInQuad(t){return t**2}static _easeOutQuad(t){return 1-(1-t)**2}static _easeInOutQuad(t){return t<.5?(t*2)**2/2:1-((1-t)*2)**2/2}static _easeInCubic(t){return t**3}static _easeOutCubic(t){return 1-(1-t)**3}static _easeInOutCubic(t){return t<.5?(t*2)**3/2:1-((1-t)*2)**3/2}static _easeInQuartic(t){return t**4}static _easeOutQuartic(t){return 1-(1-t)**4}static _easeInOutQuartic(t){return t<.5?(t*2)**4/2:1-((1-t)*2)**4/2}static _easeInQuintic(t){return t**5}static _easeOutQuintic(t){return 1-(1-t)**5}static _easeInOutQuintic(t){return t<.5?(t*2)**5/2:1-((1-t)*2)**5/2}static _easeInExpo(t){return Math.pow(2,10*(t-1))-.001}static _easeOutExpo(t){return 1-Math.pow(2,-10*t)}static _easeInOutExpo(t){return(t*=2)<1?.5*Math.pow(2,10*(t-1)):.5*(2-Math.pow(2,-10*(t-1)))}static _easeOutSpring(t){let e=1,s=.3,i=s/(Math.PI*2)*(Math.asin(1/e)||0);return e*Math.pow(2,-10*t)*Math.sin((t-i)*(Math.PI*2)/s)+1}static _easeOutBack(t){let e=1.70158;return(t=t-1)*t*((e+1)*t+e)+1}};var h=class{constructor(t,e,s){this.target=t,this.properties=e,this.direction=s,this.propertyDeltas={},this.setProperties()}setProperties(){switch(this.direction){case"to":for(let t in this.properties)this.propertyDeltas[t]={start:this.target[t],delta:this.properties[t]-this.target[t]};break;case"from":for(let t in this.properties)this.propertyDeltas[t]={start:this.properties[t],delta:this.target[t]-this.properties[t]};break;default:break}}update(t){for(let e in this.properties)this.target[e]=this.propertyDeltas[e].start+t*this.propertyDeltas[e].delta}};var m=class{constructor(){this.timeScale=1e3,this.duration=0,this.startTime=0,this.currentTime=0,this.progress=0,this.paused=!1,this.rewinding=!1,this.currentAnimationFrame=null,this.previousActionDuration=0,this.actions=[]}play(){this.rewinding=!1,this.paused?this.startTime=performance.now()-this.duration*this.progress:this.startTime=performance.now(),this.paused=!1;let t=e=>{let s=e-this.startTime;this.progress=Math.min(s/this.duration,1),this._animate(),this.progress<1&&(this.currentAnimationFrame=requestAnimationFrame(t))};this.currentAnimationFrame=requestAnimationFrame(t)}pause(){this.paused=!0,cancelAnimationFrame(this.currentAnimationFrame)}rewind(){this.rewinding=!0,this.paused?this.startTime=performance.now()-this.duration*(1-this.progress):this.startTime=performance.now(),this.paused=!1;let t=e=>{let s=this.duration-(e-this.startTime);this.progress=Math.min(s/this.duration,1),this._animate(),this.progress>0&&(this.currentAnimationFrame=requestAnimationFrame(t))};this.currentAnimationFrame=requestAnimationFrame(t)}setProgress(t){this.progress=t;let e=s=>{let i=this.duration*this.progress;this._animate()};this.currentAnimationFrame=requestAnimationFrame(e)}_animate(){this.currentTime=this.duration*this.progress,this.actions.forEach((t,e)=>{t.progress=(this.currentTime-t.timings.start)/t.timings.totalDuration,t.started&&!t.completed&&(t.options.onUpdate?.(),t.moments.forEach((s,i)=>{let n=Math.max(this.currentTime-t.timings.start-t.timings.stagger*i,0),r=Math.min(n/t.timings.duration,1),a=t.timings.easing(r);s.update(a)})),t.progress>0?(t.started||(t.options.onStart?.(),t.timings.start!==0&&t.moments.forEach(s=>{s.setProperties()})),t.started=!0):(t.started&&t.direction==="from"?t.timings.start!==0?t.moments.forEach(s=>{s.update(1)}):t.moments.forEach(s=>{s.update(0)}):!t.started&&!t.initialized&&t.direction==="from"&&(t.moments.forEach(s=>{s.update(0)}),t.initialized=!0),t.started=!1),t.progress>=1?(t.completed||(t.options.onComplete?.(),t.moments.forEach(s=>{s.update(1)})),t.completed=!0):t.completed=!1})}to(t,e,s,i=null){let n=this._setTargets(t),r=this._setTimings(n,s,i),a=[];n.forEach(o=>{a.push(new h(o,e,"to"))}),this._add(a,r,s,"to")}from(t,e,s,i=null){let n=this._setTargets(t),r=this._setTimings(n,s,i),a=[];n.forEach(o=>{a.push(new h(o,e,"from"))}),this._add(a,r,s,"from")}_add(t,e,s,i){this.actions.push({moments:t,timings:e,options:s,direction:i,progress:0,initialized:!1,started:!1,completed:!1}),this.setProgress(0)}_setTargets(t){let e=null;return Array.isArray(t)?e=t:e=[t],e}_setTimings(t,e,s){let i={},n=e.duration*this.timeScale,r=0;s!==null?r=s*this.timeScale:r=this.previousActionDuration,i.stagger=e.stagger?e.stagger*this.timeScale:0;let a=e.delay?e.delay*this.timeScale+r:r,o=n+(t.length-1)*i.stagger;return i.start=a,i.end=a+o,i.duration=n,i.totalDuration=o,i.easing=c.get(e.ease),this.previousActionDuration=i.end,this.duration=Math.max(this.previousActionDuration,this.duration),i}};var d=class{constructor(t,e,s={}){this.element=t,this.scene=e,this.options=s,this.observer=null,this.progress=0,this.scrollDistance=0,this.scrollPosition=0,this.options.pinned?(this.threshold=1,this.offset=this.element.parentElement.offsetTop,this.scrollHeight=this.scene.duration,this._scrollListener=this._pinnedScrollListener.bind(this),this._setScrollHeight()):(this.threshold=0,this.offset=this.element.offsetTop,this.viewportHeight=window.innerHeight,this.scrollHeight=this.element.getBoundingClientRect().height+this.offset,this._scrollListener=this._defaultScrollListener.bind(this)),this._createObserver()}_setScrollHeight(){this.element.parentElement.style.height=`${this.scrollHeight+window.innerHeight}px`}_defaultScrollListener(t){this.scrollDistance=t.target.scrollingElement.scrollTop,this.scrollPosition=this.scrollDistance+this.viewportHeight-this.offset,this.progress=Math.min(Math.max(this.scrollPosition/this.scrollHeight,0),1)}_pinnedScrollListener(t){this.scrollDistance=t.target.scrollingElement.scrollTop,this.scrollPosition=this.scrollDistance-this.offset,this.progress=Math.min(Math.max(this.scrollPosition/this.scrollHeight,0),1)}_createObserver(){this.observer=new IntersectionObserver(t=>{t.forEach(e=>{e.isIntersecting?window.addEventListener("scroll",this._scrollListener):window.removeEventListener("scroll",this._scrollListener)})},{threshold:this.threshold}),this.observer.observe(this.element)}};var u=class{static to(t,e,s){let i=this._setTargets(t),n=this._setTimings(i,s),r=[];i.forEach(a=>{r.push(new h(a,e,"to"))}),this._animate(r,n,s)}static from(t,e,s){let i=this._setTargets(t),n=this._setTimings(i,s),r=[];i.forEach(a=>{r.push(new h(a,e,"from"))}),this._animate(r,n,s)}static _animate(t,e,s){function i(r){let a=r-n-e.delay,o=Math.min(a/e.totalDuration,1);t.forEach((O,E)=>{let f=Math.min((a-e.stagger*E)/e.duration,1);if(f>0){let I=e.easing(f);O.update(I)}}),o<1?(s.onUpdate?.(),requestAnimationFrame(i)):s.onComplete?.()}s.onStart?.();let n=performance.now();requestAnimationFrame(i)}static _setTargets(t){let e=null;return Array.isArray(t)?e=t:e=[t],e}static _setTimings(t,e){let s=1e3,i={};return i.duration=e.duration*s,i.delay=e.delay?e.delay*s:0,i.stagger=e.stagger?e.stagger*s:0,i.totalDuration=i.duration+(t.length-1)*i.stagger,i.easing=c.get(e.ease),i}};u.scene=m;u.dolly=d;var w=document.getElementById("webgl"),j=w.getContext("webgl",{powerPreference:"high-performance"});var F={test:0},T={test:0},g=document.querySelector(".hidden-element p"),_=()=>{requestAnimationFrame(_),p.setProgress(y.progress)};requestAnimationFrame(_);var p=new u.scene;p.to(F,{test:100},{duration:4,ease:"linear"});p.to(T,{test:1},{duration:0,onStart:()=>{g.classList.contains("show")?g.classList.remove("show"):g.classList.add("show")}},3.95);var S=document.querySelector(".sticky-element"),y=new u.dolly(S,p,{pinned:!0});})();
+(() => {
+  // src/js/modules/Eases.js
+  var Eases = class {
+    static get(key) {
+      switch (key) {
+        case "linear":
+          return this._easeLinear;
+        case "easeInSine":
+          return this._easeInSine;
+        case "easeOutSine":
+          return this._easeOutSine;
+        case "easeInOutSine":
+          return this._easeInOutSine;
+        case "easeInQuad":
+          return this._easeInQuad;
+        case "easeOutQuad":
+          return this._easeOutQuad;
+        case "easeInOutQuad":
+          return this._easeInOutQuad;
+        case "easeInCubic":
+          return this._easeInCubic;
+        case "easeOutCubic":
+          return this._easeOutCubic;
+        case "easeInOutCubic":
+          return this._easeInOutCubic;
+        case "easeInQuart":
+          return this._easeInQuartic;
+        case "easeOutQuart":
+          return this._easeOutQuartic;
+        case "easeInOutQuart":
+          return this._easeInOutQuartic;
+        case "easeInQuint":
+          return this._easeInQuintic;
+        case "easeOutQuint":
+          return this._easeOutQuintic;
+        case "easeInOutQuint":
+          return this._easeInOutQuintic;
+        case "easeInExpo":
+          return this._easeInExpo;
+        case "easeOutExpo":
+          return this._easeOutExpo;
+        case "easeInOutExpo":
+          return this._easeInOutExpo;
+        case "easeOutSpring":
+          return this._easeOutSpring;
+        case "easeOutBack":
+          return this._easeOutBack;
+        default:
+          return this._easeLinear;
+      }
+    }
+    static _easeLinear(p) {
+      return p;
+    }
+    static _easeInSine(p) {
+      return -Math.cos(p * (Math.PI / 2)) + 1;
+    }
+    static _easeOutSine(p) {
+      return Math.sin(p * (Math.PI / 2));
+    }
+    static _easeInOutSine(p) {
+      return -0.5 * (Math.cos(Math.PI * p) - 1);
+    }
+    static _easeInQuad(p) {
+      return p ** 2;
+    }
+    static _easeOutQuad(p) {
+      return 1 - (1 - p) ** 2;
+    }
+    static _easeInOutQuad(p) {
+      return p < 0.5 ? (p * 2) ** 2 / 2 : 1 - ((1 - p) * 2) ** 2 / 2;
+    }
+    static _easeInCubic(p) {
+      return p ** 3;
+    }
+    static _easeOutCubic(p) {
+      return 1 - (1 - p) ** 3;
+    }
+    static _easeInOutCubic(p) {
+      return p < 0.5 ? (p * 2) ** 3 / 2 : 1 - ((1 - p) * 2) ** 3 / 2;
+    }
+    static _easeInQuartic(p) {
+      return p ** 4;
+    }
+    static _easeOutQuartic(p) {
+      return 1 - (1 - p) ** 4;
+    }
+    static _easeInOutQuartic(p) {
+      return p < 0.5 ? (p * 2) ** 4 / 2 : 1 - ((1 - p) * 2) ** 4 / 2;
+    }
+    static _easeInQuintic(p) {
+      return p ** 5;
+    }
+    static _easeOutQuintic(p) {
+      return 1 - (1 - p) ** 5;
+    }
+    static _easeInOutQuintic(p) {
+      return p < 0.5 ? (p * 2) ** 5 / 2 : 1 - ((1 - p) * 2) ** 5 / 2;
+    }
+    static _easeInExpo(p) {
+      return Math.pow(2, 10 * (p - 1)) - 1e-3;
+    }
+    static _easeOutExpo(p) {
+      return 1 - Math.pow(2, -10 * p);
+    }
+    static _easeInOutExpo(p) {
+      return (p *= 2) < 1 ? 0.5 * Math.pow(2, 10 * (p - 1)) : 0.5 * (2 - Math.pow(2, -10 * (p - 1)));
+    }
+    static _easeOutSpring(p) {
+      const p1 = 1;
+      const p2 = 0.3;
+      const p3 = p2 / (Math.PI * 2) * (Math.asin(1 / p1) || 0);
+      return p1 * Math.pow(2, -10 * p) * Math.sin((p - p3) * (Math.PI * 2) / p2) + 1;
+    }
+    static _easeOutBack(p) {
+      const p1 = 1.70158;
+      return (p = p - 1) * p * ((p1 + 1) * p + p1) + 1;
+    }
+  };
+
+  // src/js/modules/Animation.js
+  var Animation = class {
+    constructor(target, properties, direction, isDOM) {
+      this.target = target;
+      this.properties = properties;
+      this.direction = direction;
+      this.isDOM = isDOM;
+      this.unitExpression = /[a-z]+|%/;
+      if (isDOM) {
+        this.style = getComputedStyle(this.target);
+        this.DOMPropertyDeltas = {};
+        this.setDOMProperties();
+      } else {
+        this.propertyDeltas = {};
+        this.setProperties();
+      }
+    }
+    setDOMProperties() {
+      switch (this.direction) {
+        case "to":
+          for (const property in this.properties) {
+            const units = this.unitExpression.exec(this.style[property]);
+            const value = parseFloat(this.style[property].split(units)[0]);
+            this.DOMPropertyDeltas[property] = {
+              start: value,
+              delta: this.properties[property] - value,
+              units
+            };
+          }
+          break;
+        case "from":
+          for (const property in this.properties) {
+            const units = this.unitExpression.exec(this.style[property]);
+            const value = parseFloat(this.style[property].split(units)[0]);
+            this.DOMPropertyDeltas[property] = {
+              start: this.properties[property],
+              delta: value - this.properties[property],
+              units
+            };
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    setProperties() {
+      switch (this.direction) {
+        case "to":
+          for (const property in this.properties) {
+            this.propertyDeltas[property] = {
+              start: this.target[property],
+              delta: this.properties[property] - this.target[property]
+            };
+          }
+          break;
+        case "from":
+          for (const property in this.properties) {
+            this.propertyDeltas[property] = {
+              start: this.properties[property],
+              delta: this.target[property] - this.properties[property]
+            };
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    update(progress) {
+      if (this.isDOM) {
+        for (const property in this.properties) {
+          this.target.style[property] = this.DOMPropertyDeltas[property].start + progress * this.DOMPropertyDeltas[property].delta + this.DOMPropertyDeltas[property].units;
+        }
+      } else {
+        for (const property in this.properties) {
+          this.target[property] = this.propertyDeltas[property].start + progress * this.propertyDeltas[property].delta;
+        }
+      }
+    }
+  };
+
+  // src/js/modules/Scene.js
+  var Scene = class {
+    constructor() {
+      this.timeScale = 1e3;
+      this.duration = 0;
+      this.startTime = 0;
+      this.currentTime = 0;
+      this.progress = 0;
+      this.paused = false;
+      this.rewinding = false;
+      this.currentAnimationFrame = null;
+      this.previousActionDuration = 0;
+      this.actions = [];
+    }
+    play() {
+      this.rewinding = false;
+      if (this.paused) {
+        this.startTime = performance.now() - this.duration * this.progress;
+      } else {
+        this.startTime = performance.now();
+      }
+      this.paused = false;
+      const update = (currentTime) => {
+        const elapsedTime = currentTime - this.startTime;
+        this.progress = Math.min(elapsedTime / this.duration, 1);
+        this._animate();
+        if (this.progress < 1) {
+          this.currentAnimationFrame = requestAnimationFrame(update);
+        }
+      };
+      this.currentAnimationFrame = requestAnimationFrame(update);
+    }
+    pause() {
+      this.paused = true;
+      cancelAnimationFrame(this.currentAnimationFrame);
+    }
+    rewind() {
+      this.rewinding = true;
+      if (this.paused) {
+        this.startTime = performance.now() - this.duration * (1 - this.progress);
+      } else {
+        this.startTime = performance.now();
+      }
+      this.paused = false;
+      const update = (currentTime) => {
+        const elapsedTime = this.duration - (currentTime - this.startTime);
+        this.progress = Math.min(elapsedTime / this.duration, 1);
+        this._animate();
+        if (this.progress > 0) {
+          this.currentAnimationFrame = requestAnimationFrame(update);
+        }
+      };
+      this.currentAnimationFrame = requestAnimationFrame(update);
+    }
+    setProgress(progress) {
+      this.progress = progress;
+      const update = (currentTime) => {
+        const elapsedTime = this.duration * this.progress;
+        this._animate();
+      };
+      this.currentAnimationFrame = requestAnimationFrame(update);
+    }
+    _animate() {
+      this.currentTime = this.duration * this.progress;
+      this.actions.forEach((action, index) => {
+        action.progress = (this.currentTime - action.timings.start) / action.timings.totalDuration;
+        if (action.started && !action.completed) {
+          action.options.onUpdate?.();
+          action.moments.forEach((moment, index2) => {
+            const staggerTime = Math.max(this.currentTime - action.timings.start - action.timings.stagger * index2, 0);
+            const staggerProgress = Math.min(staggerTime / action.timings.duration, 1);
+            const latest = action.timings.easing(staggerProgress);
+            moment.update(latest);
+          });
+        }
+        if (action.progress > 0) {
+          if (!action.started) {
+            action.options.onStart?.();
+            if (action.timings.start !== 0) {
+              action.moments.forEach((moment) => {
+                moment.setProperties();
+              });
+            }
+          }
+          action.started = true;
+        } else {
+          if (action.started && action.direction === "from") {
+            if (action.timings.start !== 0) {
+              action.moments.forEach((moment) => {
+                moment.update(1);
+              });
+            } else {
+              action.moments.forEach((moment) => {
+                moment.update(0);
+              });
+            }
+          } else if (!action.started && !action.initialized && action.direction === "from") {
+            action.moments.forEach((moment) => {
+              moment.update(0);
+            });
+            action.initialized = true;
+          }
+          action.started = false;
+        }
+        if (action.progress >= 1) {
+          if (!action.completed) {
+            action.options.onComplete?.();
+            action.moments.forEach((moment) => {
+              moment.update(1);
+            });
+          }
+          action.completed = true;
+        } else {
+          action.completed = false;
+        }
+      });
+    }
+    to(target, properties, options, offset = null) {
+      const targets = this._setTargets(target);
+      const timings = this._setTimings(targets, options, offset);
+      const moments = [];
+      targets.forEach((target2) => {
+        moments.push(new Animation(target2, properties, "to"));
+      });
+      this._add(moments, timings, options, "to");
+    }
+    from(target, properties, options, offset = null) {
+      const targets = this._setTargets(target);
+      const timings = this._setTimings(targets, options, offset);
+      const moments = [];
+      targets.forEach((target2) => {
+        moments.push(new Animation(target2, properties, "from"));
+      });
+      this._add(moments, timings, options, "from");
+    }
+    _add(moments, timings, options, direction) {
+      this.actions.push({ moments, timings, options, direction, progress: 0, initialized: false, started: false, completed: false });
+      this.setProgress(0);
+    }
+    _setTargets(target) {
+      let targets = null;
+      if (Array.isArray(target)) {
+        targets = target;
+      } else {
+        targets = [target];
+      }
+      return targets;
+    }
+    _setTimings(targets, options, offset) {
+      const timings = {};
+      const timeScaledDuration = options.duration * this.timeScale;
+      let actionOffset = 0;
+      if (offset !== null) {
+        actionOffset = offset * this.timeScale;
+      } else {
+        actionOffset = this.previousActionDuration;
+      }
+      timings.stagger = options.stagger ? options.stagger * this.timeScale : 0;
+      const delay = options.delay ? options.delay * this.timeScale + actionOffset : actionOffset;
+      const duration = timeScaledDuration + (targets.length - 1) * timings.stagger;
+      timings.start = delay;
+      timings.end = delay + duration;
+      timings.duration = timeScaledDuration;
+      timings.totalDuration = duration;
+      timings.easing = Eases.get(options.ease);
+      this.previousActionDuration = timings.end;
+      this.duration = Math.max(this.previousActionDuration, this.duration);
+      return timings;
+    }
+  };
+
+  // src/js/modules/Dolly.js
+  var Dolly = class {
+    constructor(element, scene, options = {}) {
+      this.element = element;
+      this.scene = scene;
+      this.options = options;
+      this.observer = null;
+      this.progress = 0;
+      this.scrollDistance = 0;
+      this.scrollPosition = 0;
+      if (this.options.pinned) {
+        this.threshold = 1;
+        this.offset = this.element.parentElement.offsetTop;
+        this.scrollHeight = this.scene.duration;
+        this._scrollListener = this._pinnedScrollListener.bind(this);
+        this._setScrollHeight();
+      } else {
+        this.threshold = 0;
+        this.offset = this.element.offsetTop;
+        this.viewportHeight = window.innerHeight;
+        this.scrollHeight = this.element.getBoundingClientRect().height + this.offset;
+        this._scrollListener = this._defaultScrollListener.bind(this);
+      }
+      this._createObserver();
+    }
+    _setScrollHeight() {
+      this.element.parentElement.style.height = `${this.scrollHeight + window.innerHeight}px`;
+    }
+    _defaultScrollListener(event) {
+      this.scrollDistance = event.target.scrollingElement.scrollTop;
+      this.scrollPosition = this.scrollDistance + this.viewportHeight - this.offset;
+      this.progress = Math.min(Math.max(this.scrollPosition / this.scrollHeight, 0), 1);
+    }
+    _pinnedScrollListener(event) {
+      this.scrollDistance = event.target.scrollingElement.scrollTop;
+      this.scrollPosition = this.scrollDistance - this.offset;
+      this.progress = Math.min(Math.max(this.scrollPosition / this.scrollHeight, 0), 1);
+    }
+    _createObserver() {
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            window.addEventListener("scroll", this._scrollListener);
+          } else {
+            window.removeEventListener("scroll", this._scrollListener);
+          }
+        });
+      }, { threshold: this.threshold });
+      this.observer.observe(this.element);
+    }
+  };
+
+  // src/js/modules/Director.js
+  var Director = class {
+    static to(target, properties, options) {
+      let isDOM = false;
+      let input = target;
+      if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+        isDOM = true;
+        if (target instanceof window.NodeList) {
+          input = [...target];
+        }
+      }
+      const targets = this._setTargets(input);
+      const timings = this._setTimings(targets, options);
+      const animations = [];
+      targets.forEach((target2) => {
+        animations.push(new Animation(target2, properties, "to", isDOM));
+      });
+      this._animate(animations, timings, options);
+    }
+    static from(target, properties, options) {
+      let isDOM = false;
+      let input = target;
+      if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+        isDOM = true;
+        if (target instanceof window.NodeList) {
+          input = [...target];
+        }
+      }
+      const targets = this._setTargets(target);
+      const timings = this._setTimings(targets, options);
+      const animations = [];
+      targets.forEach((target2) => {
+        animations.push(new Animation(target2, properties, "from", isDOM));
+      });
+      this._animate(animations, timings, options);
+    }
+    static _animate(animations, timings, options) {
+      function update(currentTime) {
+        const elapsedTime = currentTime - startTime - timings.delay;
+        const progress = Math.min(elapsedTime / timings.totalDuration, 1);
+        animations.forEach((animation, index) => {
+          const staggeredProgress = Math.min((elapsedTime - timings.stagger * index) / timings.duration, 1);
+          if (staggeredProgress > 0) {
+            const latest = timings.easing(staggeredProgress);
+            animation.update(latest);
+          }
+        });
+        if (progress < 1) {
+          options.onUpdate?.();
+          requestAnimationFrame(update);
+        } else {
+          options.onComplete?.();
+        }
+      }
+      options.onStart?.();
+      const startTime = performance.now();
+      requestAnimationFrame(update);
+    }
+    static _setTargets(target) {
+      let targets = null;
+      if (Array.isArray(target)) {
+        targets = target;
+      } else {
+        targets = [target];
+      }
+      return targets;
+    }
+    static _setTimings(targets, options) {
+      const timeScale = 1e3;
+      const timings = {};
+      timings.duration = options.duration * timeScale;
+      timings.delay = options.delay ? options.delay * timeScale : 0;
+      timings.stagger = options.stagger ? options.stagger * timeScale : 0;
+      timings.totalDuration = timings.duration + (targets.length - 1) * timings.stagger;
+      timings.easing = Eases.get(options.ease);
+      return timings;
+    }
+  };
+  Director.scene = Scene;
+  Director.dolly = Dolly;
+
+  // src/js/main.js
+  var webgl = document.getElementById("webgl");
+  var glContext = webgl.getContext("webgl", {
+    powerPreference: "high-performance"
+  });
+  var domElement = document.querySelector(".hidden-element p");
+  var h1 = document.querySelector("h1");
+  window.addEventListener("click", () => {
+    Director.to(h1, { top: 750, opacity: 0 }, { duration: 1, ease: "easeOutExpo" });
+  });
+})();

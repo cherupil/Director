@@ -19,11 +19,11 @@ const domElement = document.querySelector('.hidden-element p')
 
 const update = () => {
 	requestAnimationFrame(update)
-	scene.setProgress(dolly.progress)
+	//scene.setProgress(dolly.progress)
 }
-requestAnimationFrame(update)
+//requestAnimationFrame(update)
 
-let scene = new Director.scene()
+/*let scene = new Director.scene()
 
 scene.to(dummyObject, { test: 100 }, { duration: 4, ease: 'linear' })
 scene.to(domObject, { test: 1 }, { duration: 0, onStart: () => {
@@ -32,7 +32,13 @@ scene.to(domObject, { test: 1 }, { duration: 0, onStart: () => {
 	} else {
 		domElement.classList.add('show')
 	}
-} }, 3.95)
+} }, 3.95)*/
 
-const element = document.querySelector('.sticky-element')
-const dolly = new Director.dolly(element, scene, { pinned: true })
+//const element = document.querySelector('.sticky-element')
+//const dolly = new Director.dolly(element, scene, { pinned: true })
+
+const h1 = document.querySelector('h1')
+
+window.addEventListener('click', () => {
+	Director.to(h1, { top: 750, opacity: 0 }, { duration: 1, ease: 'easeOutExpo' })
+})
