@@ -26,12 +26,35 @@ export default class Action {
 					delta: this.currentValue - this.targetValue
 				}
 				break
+			case 'addClass':
+				this.classFunction = () => {
+					this.target.classList.add(this.targetValue)
+				}
+				break
+			case 'removeClass':
+				this.classFunction = () => {
+					this.target.classList.remove(this.targetValue)
+				}
+				break
 			default:
 				break
 		}
 	}
 
 	update(progress) {
-		this.target[this.property] = (this.propertyDelta.start + progress * this.propertyDelta.delta) + this.units
+		if (this.property !== 'class') {
+			this.target[this.property] = (this.propertyDelta.start + progress * this.propertyDelta.delta) + this.units
+		} else {
+			if (progress === 0) {
+				if (this.direction === 'addClass') {
+					this.target.classList.remove(this.targetValue)
+				} else {
+					this.target.classList.add(this.targetValue)
+				}
+			}
+			if (progress === 1) {
+				this.classFunction()
+			}
+		}
 	}
 }

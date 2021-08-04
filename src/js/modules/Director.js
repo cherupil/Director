@@ -44,6 +44,46 @@ export default class Director {
 		this._animate(actors, timings, options)
 	}
 
+	static addClass(target, properties, options) {
+		let isDOM = false
+		let input = target
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+			isDOM = true
+			if (target instanceof window.NodeList) {
+				input = [...target]
+			}
+		}
+		const targets = this._setTargets(input)
+		const timings = this._setTimings(targets, options)
+
+		const actors = []
+		targets.forEach(target => {
+			actors.push(new Actor(target, properties, 'addClass', isDOM))
+		})
+
+		this._animate(actors, timings, options)
+	}
+
+	static removeClass(target, properties, options) {
+		let isDOM = false
+		let input = target
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+			isDOM = true
+			if (target instanceof window.NodeList) {
+				input = [...target]
+			}
+		}
+		const targets = this._setTargets(input)
+		const timings = this._setTimings(targets, options)
+
+		const actors = []
+		targets.forEach(target => {
+			actors.push(new Actor(target, properties, 'removeClass', isDOM))
+		})
+
+		this._animate(actors, timings, options)
+	}
+
 	static _animate(actors, timings, options) {
 		function update(currentTime) {
 			const elapsedTime = (currentTime - startTime) - timings.delay
@@ -88,7 +128,7 @@ export default class Director {
 		const timeScale = 1000
 		const timings = {}
 
-		timings.duration = options.duration * timeScale
+		timings.duration = options.duration ? (options.duration * timeScale) : 0
 		timings.delay = options.delay ? (options.delay * timeScale) : 0
 		timings.stagger = options.stagger ? (options.stagger * timeScale) : 0
 		timings.totalDuration = timings.duration + ((targets.length - 1) * timings.stagger)

@@ -94,6 +94,9 @@ export default class Scene {
 					const staggerProgress = Math.min(staggerTime / action.timings.duration, 1)
 					const latest = action.timings.easing(staggerProgress)
 					moment.update(latest)
+					if (action.options.toggle && (staggerProgress !== 1)) {
+						moment.update(0)
+					}
 				})
 			}
 
@@ -123,6 +126,11 @@ export default class Scene {
 						moment.update(0)
 					})
 					action.initialized = true
+				}
+				if (action.options.toggle) {
+					action.moments.forEach(moment => {
+						moment.update(0)
+					})
 				}
 				action.started = false
 			}
@@ -181,6 +189,46 @@ export default class Scene {
 		this._add(moments, timings, options, 'from')
 	}
 
+	addClass(target, properties, options, offset = null) {
+		let isDOM = false
+		let input = target
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+			isDOM = true
+			if (target instanceof window.NodeList) {
+				input = [...target]
+			}
+		}
+		const targets = this._setTargets(input)
+		const timings = this._setTimings(targets, options, offset)
+
+		const moments = []
+		targets.forEach(target => {
+			moments.push(new Actor(target, properties, 'addClass', isDOM))
+		})
+
+		this._add(moments, timings, options, 'addClass')
+	}
+
+	removeClass(target, properties, options, offset = null) {
+		let isDOM = false
+		let input = target
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+			isDOM = true
+			if (target instanceof window.NodeList) {
+				input = [...target]
+			}
+		}
+		const targets = this._setTargets(input)
+		const timings = this._setTimings(targets, options, offset)
+
+		const moments = []
+		targets.forEach(target => {
+			moments.push(new Actor(target, properties, 'removeClass', isDOM))
+		})
+
+		this._add(moments, timings, options, 'removeClass')
+	}
+
 	_add(moments, timings, options, direction) {
 		this.actions.push({ moments, timings, options, direction, progress: 0, initialized: false, started: false, completed: false })
 		this.setProgress(0)
@@ -200,7 +248,7 @@ export default class Scene {
 	_setTimings(targets, options, offset) {
 		const timings = {}
 
-		const timeScaledDuration = options.duration * this.timeScale
+		const timeScaledDuration = options.duration ? (options.duration * this.timeScale) : 0
 
 		let actionOffset = 0
 		if (offset !== null) {

@@ -55,10 +55,14 @@ export default class Actor {
 						this.actions.push(new Action(this.transformMatrix, property, this.properties[property], parseFloat(this.transformMatrix[property]), null, this.direction))
 					}
 				} else {
-					const units = this.unitExpression.exec(style[property])
-					const value = parseFloat(style[property].split(units)[0])
+					if (property !== 'class') {
+						const units = this.unitExpression.exec(style[property])
+						const value = parseFloat(style[property].split(units)[0])
 
-					this.actions.push(new Action(this.target.style, property, this.properties[property], value, units, this.direction))
+						this.actions.push(new Action(this.target.style, property, this.properties[property], value, units, this.direction))
+					} else {
+						this.actions.push(new Action(this.target, property, this.properties[property], null, null, this.direction))
+					}
 				}
 			}
 		} else {
