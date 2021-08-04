@@ -118,82 +118,186 @@
     }
   };
 
-  // src/js/modules/Animation.js
-  var Animation = class {
-    constructor(target, properties, direction, isDOM) {
-      this.target = target;
-      this.properties = properties;
-      this.direction = direction;
-      this.isDOM = isDOM;
-      this.unitExpression = /[a-z]+|%/;
-      if (isDOM) {
-        this.style = getComputedStyle(this.target);
-        this.DOMPropertyDeltas = {};
-        this.setDOMProperties();
-      } else {
-        this.propertyDeltas = {};
-        this.setProperties();
-      }
+  // src/js/modules/Utilities.js
+  var Utilities = class {
+    static multiply2DMatricies(a, b) {
+      const a00 = a[0 * 3 + 0];
+      const a01 = a[0 * 3 + 1];
+      const a02 = a[0 * 3 + 2];
+      const a10 = a[1 * 3 + 0];
+      const a11 = a[1 * 3 + 1];
+      const a12 = a[1 * 3 + 2];
+      const a20 = a[2 * 3 + 0];
+      const a21 = a[2 * 3 + 1];
+      const a22 = a[2 * 3 + 2];
+      const b00 = b[0 * 3 + 0];
+      const b01 = b[0 * 3 + 1];
+      const b02 = b[0 * 3 + 2];
+      const b10 = b[1 * 3 + 0];
+      const b11 = b[1 * 3 + 1];
+      const b12 = b[1 * 3 + 2];
+      const b20 = b[2 * 3 + 0];
+      const b21 = b[2 * 3 + 1];
+      const b22 = b[2 * 3 + 2];
+      return [
+        b00 * a00 + b01 * a10 + b02 * a20,
+        b00 * a01 + b01 * a11 + b02 * a21,
+        b00 * a02 + b01 * a12 + b02 * a22,
+        b10 * a00 + b11 * a10 + b12 * a20,
+        b10 * a01 + b11 * a11 + b12 * a21,
+        b10 * a02 + b11 * a12 + b12 * a22,
+        b20 * a00 + b21 * a10 + b22 * a20,
+        b20 * a01 + b21 * a11 + b22 * a21,
+        b20 * a02 + b21 * a12 + b22 * a22
+      ];
     }
-    setDOMProperties() {
-      switch (this.direction) {
-        case "to":
-          for (const property in this.properties) {
-            const units = this.unitExpression.exec(this.style[property]);
-            const value = parseFloat(this.style[property].split(units)[0]);
-            this.DOMPropertyDeltas[property] = {
-              start: value,
-              delta: this.properties[property] - value,
-              units
-            };
-          }
-          break;
-        case "from":
-          for (const property in this.properties) {
-            const units = this.unitExpression.exec(this.style[property]);
-            const value = parseFloat(this.style[property].split(units)[0]);
-            this.DOMPropertyDeltas[property] = {
-              start: this.properties[property],
-              delta: value - this.properties[property],
-              units
-            };
-          }
-          break;
-        default:
-          break;
-      }
+    static translate2D(tx, ty) {
+      return [
+        1,
+        0,
+        tx,
+        0,
+        1,
+        ty,
+        0,
+        0,
+        1
+      ];
+    }
+    static scale2D(sx, sy) {
+      return [
+        sx,
+        0,
+        0,
+        0,
+        sy,
+        0,
+        0,
+        0,
+        1
+      ];
+    }
+    static rotate2D(a) {
+      return [
+        Math.cos(a),
+        -Math.sin(a),
+        0,
+        Math.sin(a),
+        Math.cos(a),
+        0,
+        0,
+        0,
+        1
+      ];
+    }
+  };
+
+  // src/js/modules/Action.js
+  var Action = class {
+    constructor(target, property, targetValue, currentValue, units, direction) {
+      this.target = target;
+      this.property = property;
+      this.targetValue = targetValue;
+      this.currentValue = currentValue;
+      this.units = units;
+      this.direction = direction;
+      this.propertyDelta = {};
+      this.setProperties();
     }
     setProperties() {
       switch (this.direction) {
         case "to":
-          for (const property in this.properties) {
-            this.propertyDeltas[property] = {
-              start: this.target[property],
-              delta: this.properties[property] - this.target[property]
-            };
-          }
+          this.propertyDelta = {
+            start: this.currentValue,
+            delta: this.targetValue - this.currentValue
+          };
           break;
         case "from":
-          for (const property in this.properties) {
-            this.propertyDeltas[property] = {
-              start: this.properties[property],
-              delta: this.target[property] - this.properties[property]
-            };
-          }
+          this.propertyDelta = {
+            start: this.targetValue,
+            delta: this.currentValue - this.targetValue
+          };
           break;
         default:
           break;
       }
     }
     update(progress) {
+      this.target[this.property] = this.propertyDelta.start + progress * this.propertyDelta.delta + this.units;
+    }
+  };
+
+  // src/js/modules/Actor.js
+  var Actor = class {
+    constructor(target, properties, direction, isDOM) {
+      this.target = target;
+      this.properties = properties;
+      this.direction = direction;
+      this.isDOM = isDOM;
+      this.unitExpression = /[a-z]+|%/;
+      this.hasTransform = false;
+      this.transformPropertyKeys = ["translateX", "translateY", "rotate", "scale", "scaleX", "scaleY"];
+      this.transformMatrix = {};
+      this.setProperties();
+    }
+    getTransformMatrix(matrix) {
+      if (matrix === "none" || matrix === void 0) {
+        return {
+          translateX: 0,
+          translateY: 0,
+          scaleX: 1,
+          scaleY: 1,
+          rotate: 0
+        };
+      }
+      this.transformType = matrix.includes("3d") ? "3d" : "2d";
+      const values = matrix.match(/matrix.*\((.+)\)/)[1].split(", ");
+      if (this.transformType === "2d") {
+        return {
+          translateX: values[4],
+          translateY: values[5],
+          scaleX: values[0],
+          scaleY: values[3],
+          rotate: Math.atan2(values[1], values[0]) * (180 / Math.PI)
+        };
+      }
+    }
+    setProperties() {
+      this.actions = [];
       if (this.isDOM) {
+        const style = getComputedStyle(this.target);
+        this.transformMatrix = this.getTransformMatrix(style["transform"]);
         for (const property in this.properties) {
-          this.target.style[property] = this.DOMPropertyDeltas[property].start + progress * this.DOMPropertyDeltas[property].delta + this.DOMPropertyDeltas[property].units;
+          if (this.transformPropertyKeys.includes(property)) {
+            this.hasTransform = true;
+            if (property === "scale") {
+              this.actions.push(new Action(this.transformMatrix, "scaleX", this.properties["scale"], parseFloat(this.transformMatrix["scaleX"]), null, this.direction));
+              this.actions.push(new Action(this.transformMatrix, "scaleY", this.properties["scale"], parseFloat(this.transformMatrix["scaleY"]), null, this.direction));
+            } else {
+              this.actions.push(new Action(this.transformMatrix, property, this.properties[property], parseFloat(this.transformMatrix[property]), null, this.direction));
+            }
+          } else {
+            const units = this.unitExpression.exec(style[property]);
+            const value = parseFloat(style[property].split(units)[0]);
+            this.actions.push(new Action(this.target.style, property, this.properties[property], value, units, this.direction));
+          }
         }
       } else {
         for (const property in this.properties) {
-          this.target[property] = this.propertyDeltas[property].start + progress * this.propertyDeltas[property].delta;
+          this.actions.push(new Action(this.target, property, this.properties[property], this.target[property], null, this.direction));
         }
+      }
+      for (const action of this.actions) {
+        action.setProperties();
+      }
+    }
+    update(progress) {
+      for (const action of this.actions) {
+        action.update(progress);
+      }
+      if (this.hasTransform) {
+        const compositeMatrix = Utilities.multiply2DMatricies(Utilities.multiply2DMatricies(Utilities.scale2D(this.transformMatrix.scaleX, this.transformMatrix.scaleY), Utilities.rotate2D(this.transformMatrix.rotate * (Math.PI / 180))), Utilities.translate2D(this.transformMatrix.translateX, this.transformMatrix.translateY));
+        this.target.style.transform = `matrix(${compositeMatrix[0]}, ${compositeMatrix[3]}, ${compositeMatrix[1]}, ${compositeMatrix[4]}, ${compositeMatrix[2]}, ${compositeMatrix[5]})`;
       }
     }
   };
@@ -320,7 +424,7 @@
       const timings = this._setTimings(targets, options, offset);
       const moments = [];
       targets.forEach((target2) => {
-        moments.push(new Animation(target2, properties, "to"));
+        moments.push(new Actor(target2, properties, "to"));
       });
       this._add(moments, timings, options, "to");
     }
@@ -329,7 +433,7 @@
       const timings = this._setTimings(targets, options, offset);
       const moments = [];
       targets.forEach((target2) => {
-        moments.push(new Animation(target2, properties, "from"));
+        moments.push(new Actor(target2, properties, "from"));
       });
       this._add(moments, timings, options, "from");
     }
@@ -369,8 +473,8 @@
     }
   };
 
-  // src/js/modules/Dolly.js
-  var Dolly = class {
+  // src/js/modules/Camera.js
+  var Camera = class {
     constructor(element, scene, options = {}) {
       this.element = element;
       this.scene = scene;
@@ -434,11 +538,11 @@
       }
       const targets = this._setTargets(input);
       const timings = this._setTimings(targets, options);
-      const animations = [];
+      const actors = [];
       targets.forEach((target2) => {
-        animations.push(new Animation(target2, properties, "to", isDOM));
+        actors.push(new Actor(target2, properties, "to", isDOM));
       });
-      this._animate(animations, timings, options);
+      this._animate(actors, timings, options);
     }
     static from(target, properties, options) {
       let isDOM = false;
@@ -451,21 +555,21 @@
       }
       const targets = this._setTargets(target);
       const timings = this._setTimings(targets, options);
-      const animations = [];
+      const actors = [];
       targets.forEach((target2) => {
-        animations.push(new Animation(target2, properties, "from", isDOM));
+        actors.push(new Actor(target2, properties, "from", isDOM));
       });
-      this._animate(animations, timings, options);
+      this._animate(actors, timings, options);
     }
-    static _animate(animations, timings, options) {
+    static _animate(actors, timings, options) {
       function update(currentTime) {
         const elapsedTime = currentTime - startTime - timings.delay;
         const progress = Math.min(elapsedTime / timings.totalDuration, 1);
-        animations.forEach((animation, index) => {
+        actors.forEach((actor, index) => {
           const staggeredProgress = Math.min((elapsedTime - timings.stagger * index) / timings.duration, 1);
           if (staggeredProgress > 0) {
             const latest = timings.easing(staggeredProgress);
-            animation.update(latest);
+            actor.update(latest);
           }
         });
         if (progress < 1) {
@@ -473,6 +577,9 @@
           requestAnimationFrame(update);
         } else {
           options.onComplete?.();
+          actors.forEach((actor) => {
+            actor.update(1);
+          });
         }
       }
       options.onStart?.();
@@ -500,7 +607,7 @@
     }
   };
   Director.scene = Scene;
-  Director.dolly = Dolly;
+  Director.camera = Camera;
 
   // src/js/main.js
   var webgl = document.getElementById("webgl");
@@ -510,6 +617,6 @@
   var domElement = document.querySelector(".hidden-element p");
   var h1 = document.querySelector("h1");
   window.addEventListener("click", () => {
-    Director.to(h1, { top: 750, opacity: 0 }, { duration: 1, ease: "easeOutExpo" });
+    Director.from(h1, { scale: 0.5 }, { duration: 1, ease: "easeOutExpo" });
   });
 })();

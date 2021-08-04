@@ -1,4 +1,4 @@
-export default class Dolly {
+export default class Camera {
 	constructor(element, scene, options = {}) {
 		this.element = element
 		this.scene = scene

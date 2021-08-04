@@ -40,5 +40,5 @@ scene.to(domObject, { test: 1 }, { duration: 0, onStart: () => {
 const h1 = document.querySelector('h1')
 
 window.addEventListener('click', () => {
-	Director.to(h1, { top: 750, opacity: 0 }, { duration: 1, ease: 'easeOutExpo' })
+	Director.from(h1, { scale: 0.5 }, { duration: 1, ease: 'easeOutExpo' })
 })

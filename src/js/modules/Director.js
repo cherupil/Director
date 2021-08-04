@@ -1,7 +1,7 @@
 import Eases from './Eases.js'
-import Animation from './Animation.js'
+import Actor from './Actor.js'
 import Scene from './Scene.js'
-import Dolly from './Dolly.js'
+import Camera from './Camera.js'
 
 export default class Director {
 	static to(target, properties, options) {
@@ -16,12 +16,12 @@ export default class Director {
 		const targets = this._setTargets(input)
 		const timings = this._setTimings(targets, options)
 
-		const animations = []
+		const actors = []
 		targets.forEach(target => {
-			animations.push(new Animation(target, properties, 'to', isDOM))
+			actors.push(new Actor(target, properties, 'to', isDOM))
 		})
 
-		this._animate(animations, timings, options)
+		this._animate(actors, timings, options)
 	}
 
 	static from(target, properties, options) {
@@ -36,24 +36,24 @@ export default class Director {
 		const targets = this._setTargets(target)
 		const timings = this._setTimings(targets, options)
 
-		const animations = []
+		const actors = []
 		targets.forEach(target => {
-			animations.push(new Animation(target, properties, 'from', isDOM))
+			actors.push(new Actor(target, properties, 'from', isDOM))
 		})
 
-		this._animate(animations, timings, options)
+		this._animate(actors, timings, options)
 	}
 
-	static _animate(animations, timings, options) {
+	static _animate(actors, timings, options) {
 		function update(currentTime) {
 			const elapsedTime = (currentTime - startTime) - timings.delay
 			const progress = Math.min(elapsedTime / timings.totalDuration, 1)
 
-			animations.forEach((animation, index) => {
+			actors.forEach((actor, index) => {
 				const staggeredProgress = Math.min((elapsedTime - (timings.stagger * index)) / timings.duration, 1)
 				if (staggeredProgress > 0) {
 					const latest = timings.easing(staggeredProgress)
-					animation.update(latest)
+					actor.update(latest)
 				}
 			})
 
@@ -62,6 +62,9 @@ export default class Director {
 				requestAnimationFrame(update)
 			} else {
 				options.onComplete?.()
+				actors.forEach(actor => {
+					actor.update(1)
+				})
 			}
 		}
 
@@ -96,4 +99,4 @@ export default class Director {
 }
 
 Director.scene = Scene
-Director.dolly = Dolly
+Director.camera = Camera

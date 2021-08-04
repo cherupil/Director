@@ -1,5 +1,5 @@
 import Eases from './Eases.js'
-import Animation from './Animation.js'
+import Actor from './Actor.js'
 
 export default class Scene {
 	constructor() {
@@ -147,7 +147,7 @@ export default class Scene {
 
 		const moments = []
 		targets.forEach(target => {
-			moments.push(new Animation(target, properties, 'to'))
+			moments.push(new Actor(target, properties, 'to'))
 		})
 
 		this._add(moments, timings, options, 'to')
@@ -159,7 +159,7 @@ export default class Scene {
 
 		const moments = []
 		targets.forEach(target => {
-			moments.push(new Animation(target, properties, 'from'))
+			moments.push(new Actor(target, properties, 'from'))
 		})
 
 		this._add(moments, timings, options, 'from')
