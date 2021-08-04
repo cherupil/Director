@@ -36,7 +36,7 @@
 
 main {
 	justify-content: flex-end;
-	background-color: black;
+	background-color: #242528;
 	display: flex;
 }
 
@@ -53,12 +53,13 @@ section {
 }
 
 .blank-section {
+	background-color: var(--green-100);
 	height: 100vh;
 	position: relative;
 }
 
 h1 {
-	color: white;
+	color: var(--grey-400);
 	font-family: system-ui;
 	font-size: 288px;
 	font-weight: 700;
@@ -70,81 +71,131 @@ h1 {
 	top: 50%;
 	transform: translate(-50%, -50%);
 	width: 100%;
-	will-change: transform;
+	z-index: 1;
 }
 
 .sticky-wrapper {
-	height: 400vh;
-	margin-bottom: 300px;
-	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
 }
 
 .sticky-element {
+	bottom: 0;
 	display: flex;
-	flex-direction: column;
-	height: 100vh;
+	perspective: 100vw;
+	perspective-origin: 25vw 50vh;
 	position: sticky;
-	top: 0;
-	z-index: 2;
 }
 
-h2 {
-	color: white;
-	font-family: system-ui;
-	font-size: 144px;
-	font-weight: 700;
-	letter-spacing: -4px;
-	line-height: 1.25;
-	margin-bottom: 72px;
-	margin-top: auto;
+.images {
+	flex-shrink: 0;
+	height: 100vh;
+	perspective: 50vw;
 	position: relative;
-	text-align: center;
-	width: 100%;
+	width: 50vw;
 }
 
-h2:before {
-	background-image: linear-gradient(rgba(0,0,0,1) 50%, rgba(0,0,0,0));
-	content: '';
-	display: block;
-	height: 300%;
-	left: 0;
+.image-item {
+	background-color: var(--blue-300);
+	border-radius: 24px;
+	box-shadow: 0 1px 4px 0 rgba(0,0,0,0.16), 0 2px 16px 0 rgba(0,0,0,0.08);
+	height: 360px;
+	left: calc(50% - 100px);
 	position: absolute;
-	top: 50%;
-	transform: translateY(-50%);
-	width: 100%;
+	top: calc(50% - 150px);
+	transform-origin: center center;
+	transform-style: preserve-3d;
+	width: 200px;
 	z-index: -1;
 }
 
-.hidden-element {
-	bottom: 0;
-	height: 100vh;
-	left: 50%;
+.image-item:before {
+	background-color: var(--blue-400);
+	border-radius: 16px;
+	box-shadow: 0 0 4px 0 rgba(0,0,0,0.48), 0 0 8px 0 rgba(0,0,0,0.24);
+	content: '';
+	display: block;
+	height: calc(100% - 16px);
+	left: 8px;
 	position: absolute;
-	transform: translate(-50%, 300px);
+	top: 8px;
+	transform: scale(var(--gradient-scale)) translateX(var(--gradient-offset)) translateY(calc(-1 * var(--gradient-offset)));
+	width: calc(100% - 16px);
 }
 
-.hidden-element--sticky {
-	height: 300px;
-	position: sticky;
-	top: calc(100vh - 300px);
-	width: 350px;
+.image-item:after {
+	background-image: linear-gradient(var(--gradient-angle), rgba(255, 255, 255, var(--gradient-intensity)), rgba(255, 255, 255, var(--gradient-falloff)) var(--gradient-position), rgba(255, 255, 255, 0) var(--gradient-position), rgba(255, 255, 255, 0));
+	border-radius: 12px;
+	box-shadow: inset 0 0 16px 0 rgba(0,0,0,0.24), 0 0 32px 0 rgba(0,0,0,0.12);
+	content: '';
+	display: block;
+	height: calc(100% - 24px);
+	left: 12px;
+	position: absolute;
+	top: 12px;
+	transform: scale(var(--gradient-scale)) translateX(calc(2 * var(--gradient-offset))) translateY(calc(-2 * var(--gradient-offset)));
+	width: calc(100% - 24px);
 }
 
-p {
-	color: white;
-	font-family: system-ui;
-	font-size: 48px;
-	font-weight: 700;
-	letter-spacing: -1px;
-	line-height: 1;
+.image-item:first-child {
+	background-color: var(--red-300);
+}
+
+.image-item:first-child:before {
+	background-color: var(--red-400);
+}
+
+.image-item:last-child {
+	background-color: var(--green-300);
+	z-index: 2;
+}
+
+.image-item:last-child:before {
+	background-color: var(--green-400);
+}
+
+.copy {
+	margin-left: 4.33333%;
+	position: relative;
+	width: 40%;
+}
+
+.copy-item {
 	opacity: 0;
 	position: absolute;
-	text-align: center;
-	top: 33.33333%;
-	transition: opacity 400ms ease;
+	top: 40%;
 	width: 100%;
 }
 
-p.show {
-	opacity: 1;
+.copy-item h2 {
+	color: var(--green-100);
+	font-family: system-ui;
+	font-size: 64px;
+	font-weight: 700;
+	letter-spacing: -1px;
+	line-height: 1;
+}
+
+.copy-item h2:after {
+	background-image: linear-gradient(to right, var(--blue-300), var(--green-200));
+	border-radius: 2px;
+	content: '';
+	display: block;
+	height: 4px;
+	margin: 24px 0 20px;
+	width: 48px;
+}
+
+.copy-item p {
+	color: var(--green-200);
+	font-family: system-ui;
+	font-size: 32px;
+	font-weight: 600;
+	line-height: 1.33333;
+}
+
+.copy-item p em {
+	color: var(--green-100);
+	font-style: normal;
 }

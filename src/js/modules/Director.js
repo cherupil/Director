@@ -33,7 +33,7 @@ export default class Director {
 				input = [...target]
 			}
 		}
-		const targets = this._setTargets(target)
+		const targets = this._setTargets(input)
 		const timings = this._setTimings(targets, options)
 
 		const actors = []

@@ -142,24 +142,40 @@ export default class Scene {
 	}
 
 	to(target, properties, options, offset = null) {
-		const targets = this._setTargets(target)
+		let isDOM = false
+		let input = target
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+			isDOM = true
+			if (target instanceof window.NodeList) {
+				input = [...target]
+			}
+		}
+		const targets = this._setTargets(input)
 		const timings = this._setTimings(targets, options, offset)
 
 		const moments = []
 		targets.forEach(target => {
-			moments.push(new Actor(target, properties, 'to'))
+			moments.push(new Actor(target, properties, 'to', isDOM))
 		})
 
 		this._add(moments, timings, options, 'to')
 	}
 
 	from(target, properties, options, offset = null) {
-		const targets = this._setTargets(target)
+		let isDOM = false
+		let input = target
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+			isDOM = true
+			if (target instanceof window.NodeList) {
+				input = [...target]
+			}
+		}
+		const targets = this._setTargets(input)
 		const timings = this._setTimings(targets, options, offset)
 
 		const moments = []
 		targets.forEach(target => {
-			moments.push(new Actor(target, properties, 'from'))
+			moments.push(new Actor(target, properties, 'from', isDOM))
 		})
 
 		this._add(moments, timings, options, 'from')
