@@ -254,7 +254,7 @@ export default class Scene {
 		if (offset !== null) {
 			actionOffset = offset * this.timeScale
 		} else {
-			actionOffset = this.previousActionDuration
+			actionOffset = this.duration
 		}
 
 		timings.stagger = options.stagger ? (options.stagger * this.timeScale) : 0

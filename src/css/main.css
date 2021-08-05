@@ -81,7 +81,7 @@ h1 {
 .sticky-element {
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
+	height: 150vh;
 	position: sticky;
 	top: 0;
 	z-index: 2;
@@ -90,7 +90,7 @@ h1 {
 .temp-canvas {
 	background-color: var(--grey-500);
 	bottom: 0;
-	height: 600px;
+	height: 100vh;
 	left: 50%;
 	position: absolute;
 	transform: translateX(-50%);
@@ -98,23 +98,29 @@ h1 {
 }
 
 .copy-item {
+	opacity: 0;
 	position: absolute;
+	transition: opacity 400ms ease;
 	width: 300px;
+}
+
+.copy-item.show {
+	opacity: 1;
 }
 
 .copy-item:nth-of-type(1) {
 	left: 200px;
-	top: 10%;
+	top: 5%;
 }
 
 .copy-item:nth-of-type(2) {
 	left: 200px;
-	top: 35%;
+	top: 20%;
 }
 
 .copy-item:nth-of-type(3) {
 	right: 200px;
-	top: 50%;
+	top: 25%;
 }
 
 .copy-item p {

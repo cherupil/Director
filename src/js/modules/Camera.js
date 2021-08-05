@@ -11,13 +11,12 @@ export default class Camera {
 		this.scrollPosition = 0
 
 		if (this.options.pinned) {
-			this.threshold = 1
 			this.offset = this.element.parentElement.offsetTop
 			this.scrollHeight = this.scene.duration
 			this._scrollListener = this._pinnedScrollListener.bind(this)
 			this._setScrollHeight()
+			this.scrollHeight += this.options.offset ? this.options.offset : 0
 		} else {
-			this.threshold = 0
 			this.offset = this.element.offsetTop
 			this.viewportHeight = window.innerHeight
 			this.scrollHeight = this.element.getBoundingClientRect().height + this.offset
@@ -48,12 +47,12 @@ export default class Camera {
 			entries.forEach(entry => {
 				if (entry.isIntersecting) {
 					window.addEventListener('scroll', this._scrollListener)
-					this.progress = Math.round(this.progress)
 				} else {
 					window.removeEventListener('scroll', this._scrollListener)
+					this.progress = Math.round(this.progress)
 				}
 			})
-		}, { threshold: this.threshold })
+		}, { threshold: 0 })
 
 		this.observer.observe(this.element)
 	}
