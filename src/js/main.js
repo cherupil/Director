@@ -15,7 +15,7 @@ const domObject = {
 	test: 0
 }
 
-const domElement = document.querySelectorAll('p')
+const domElement = document.querySelector('.hidden-element p')
 
 const update = () => {
 	requestAnimationFrame(update)
@@ -25,8 +25,8 @@ requestAnimationFrame(update)
 
 let scene = new Director.scene()
 
-scene.to(dummyObject, { test: 100 }, { duration: 4, ease: 'linear' })
-scene.addClass(domElement, { class: 'show' }, { toggle: true, stagger: 0.2 }, 3.95)
+scene.to(dummyObject, { test: 100 }, { duration: 2, ease: 'linear' })
+scene.addClass(domElement, { class: 'show' }, { toggle: true })
 
 const element = document.querySelector('.sticky-element')
 const camera = new Director.camera(element, scene, { pinned: true })

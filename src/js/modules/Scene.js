@@ -248,7 +248,7 @@ export default class Scene {
 	_setTimings(targets, options, offset) {
 		const timings = {}
 
-		const timeScaledDuration = options.duration ? (options.duration * this.timeScale) : 0
+		const timeScaledDuration = options.duration ? (options.duration * this.timeScale) : 1
 
 		let actionOffset = 0
 		if (offset !== null) {

@@ -48,6 +48,7 @@ export default class Camera {
 			entries.forEach(entry => {
 				if (entry.isIntersecting) {
 					window.addEventListener('scroll', this._scrollListener)
+					this.progress = Math.round(this.progress)
 				} else {
 					window.removeEventListener('scroll', this._scrollListener)
 				}

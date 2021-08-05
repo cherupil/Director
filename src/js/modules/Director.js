@@ -128,7 +128,7 @@ export default class Director {
 		const timeScale = 1000
 		const timings = {}
 
-		timings.duration = options.duration ? (options.duration * timeScale) : 0
+		timings.duration = options.duration ? (options.duration * timeScale) : 1
 		timings.delay = options.delay ? (options.delay * timeScale) : 0
 		timings.stagger = options.stagger ? (options.stagger * timeScale) : 0
 		timings.totalDuration = timings.duration + ((targets.length - 1) * timings.stagger)
