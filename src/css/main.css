@@ -57,6 +57,10 @@ section {
 	position: relative;
 }
 
+.blank-section:first-of-type {
+	background-color: var(--green-200);
+}
+
 h1 {
 	color: var(--grey-500);
 	font-family: system-ui;
@@ -87,25 +91,28 @@ h1 {
 	z-index: 2;
 }
 
-.temp-canvas {
-	background-color: var(--grey-500);
+.canvas {
 	bottom: 0;
-	height: 100vh;
+	height: 100%;
 	left: 50%;
 	position: absolute;
 	transform: translateX(-50%);
-	width: 600px;
+	width: 100%;
+	z-index: -1;
 }
 
 .copy-item {
 	opacity: 0;
 	position: absolute;
-	transition: opacity 400ms ease;
+	transform: translateY(25px);
+	transition: opacity 400ms ease, transform 400ms ease;
 	width: 300px;
+	will-change: transform;
 }
 
 .copy-item.show {
 	opacity: 1;
+	transform: translateY(0px);
 }
 
 .copy-item:nth-of-type(1) {
