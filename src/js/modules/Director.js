@@ -138,5 +138,5 @@ export default class Director {
 	}
 }
 
-Director.scene = Scene
-Director.camera = Camera
+Director.Scene = Scene
+Director.Camera = Camera

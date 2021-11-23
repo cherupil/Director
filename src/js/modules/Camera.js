@@ -3,22 +3,30 @@ export default class Camera {
 		this.element = element
 		this.scene = scene
 		this.options = options
+		this.init()
+	}
 
+	init() {
 		this.observer = null
 		this.progress = 0
 
 		this.scrollDistance = 0
 		this.scrollPosition = 0
 
+		this.element.parentElement.style.height = 'auto'
+		this.viewportHeight = window.innerHeight
+
+		this.isIntersecting = false
+
 		if (this.options.pinned) {
 			this.offset = this.element.parentElement.offsetTop
+			this.offset += this.options.beginOnIntersection ? -this.element.parentElement.offsetHeight : 0
 			this.scrollHeight = this.scene.duration
 			this._scrollListener = this._pinnedScrollListener.bind(this)
 			this._setScrollHeight()
 			this.scrollHeight += this.options.offset ? this.options.offset : 0
 		} else {
 			this.offset = this.element.offsetTop
-			this.viewportHeight = window.innerHeight
 			this.scrollHeight = this.element.getBoundingClientRect().height + this.offset
 			this._scrollListener = this._defaultScrollListener.bind(this)
 		}
@@ -26,8 +34,19 @@ export default class Camera {
 		this._createObserver()
 	}
 
+	resize() {
+		this.viewportHeight = window.innerHeight
+		this._setScrollHeight()
+	}
+
+	setScene(scene) {
+		this.scene = scene
+		this.init()
+	}
+
 	_setScrollHeight() {
-		this.element.parentElement.style.height = `${this.scrollHeight + window.innerHeight}px`
+		const totalHeight = this.scrollHeight + (this.options.beginOnIntersection ? 0 : this.viewportHeight)
+		this.element.parentElement.style.height = `${(totalHeight / this.viewportHeight) * 100}vh`
 	}
 
 	_defaultScrollListener(event) {
@@ -46,13 +65,15 @@ export default class Camera {
 		this.observer = new IntersectionObserver(entries => {
 			entries.forEach(entry => {
 				if (entry.isIntersecting) {
+					this.isIntersecting = true
 					window.addEventListener('scroll', this._scrollListener)
 				} else {
+					this.isIntersecting = false
 					window.removeEventListener('scroll', this._scrollListener)
 					this.progress = Math.round(this.progress)
 				}
 			})
-		}, { threshold: 0 })
+		}, { threshold: this.options.threshold ? this.options.threshold : 0 })
 
 		this.observer.observe(this.element)
 	}

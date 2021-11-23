@@ -11,6 +11,9 @@ export default class Actor {
 		this.hasTransform = false
 		this.transformPropertyKeys = ['translateX', 'translateY', 'rotate', 'scale', 'scaleX', 'scaleY']
 		this.transformMatrix = {}
+		if (this.isDOM) {
+			this.bounds = this.target.getBoundingClientRect()
+		}
 
 		this.setProperties()
 	}
@@ -51,6 +54,14 @@ export default class Actor {
 					if (property === 'scale') {
 						this.actions.push(new Action(this.transformMatrix, 'scaleX', this.properties['scale'], parseFloat(this.transformMatrix['scaleX']), null, this.direction))
 						this.actions.push(new Action(this.transformMatrix, 'scaleY', this.properties['scale'], parseFloat(this.transformMatrix['scaleY']), null, this.direction))
+					} else if (((property === 'translateX') || (property === 'translateY')) && this.isDOM) {
+						let value = this.properties[property]
+						if (property === 'translateX') {
+							value *= (this.bounds.width / 100)
+						} else {
+							value *= (this.bounds.height / 100)
+						}
+						this.actions.push(new Action(this.transformMatrix, property, value, parseFloat(this.transformMatrix[property]), null, this.direction))
 					} else {
 						this.actions.push(new Action(this.transformMatrix, property, this.properties[property], parseFloat(this.transformMatrix[property]), null, this.direction))
 					}

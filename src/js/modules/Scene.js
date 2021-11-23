@@ -9,6 +9,7 @@ export default class Scene {
 		this.currentTime = 0
 		this.progress = 0
 
+		this.started = false
 		this.paused = false
 		this.rewinding = false
 		this.currentAnimationFrame = null
@@ -19,6 +20,13 @@ export default class Scene {
 
 	play() {
 		this.rewinding = false
+
+		if (!this.started) {
+			if (this.onStartCallback) {
+				this.onStartCallback()
+			}
+			this.started = true
+		}
 
 		if (this.paused) {
 			this.startTime = performance.now() - (this.duration * this.progress)
@@ -73,6 +81,13 @@ export default class Scene {
 	setProgress(progress) {
 		this.progress = progress
 
+		if ((!this.started) && (this.progress > 0)) {
+			if (this.onStartCallback) {
+				this.onStartCallback()
+			}
+			this.started = true
+		}
+
 		const update = (currentTime) => {
 			const elapsedTime = this.duration * this.progress
 			this._animate()
@@ -103,7 +118,7 @@ export default class Scene {
 			if (action.progress > 0) {
 				if (!action.started) {
 					action.options.onStart?.()
-					if (action.timings.start !== 0) {
+					if (action.timings.start !== 0 && action.direction !== 'from') {
 						action.moments.forEach(moment => {
 							moment.setProperties()
 						})
@@ -152,7 +167,7 @@ export default class Scene {
 	to(target, properties, options, offset = null) {
 		let isDOM = false
 		let input = target
-		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList || target instanceof window.SVGPathElement) {
 			isDOM = true
 			if (target instanceof window.NodeList) {
 				input = [...target]
@@ -172,7 +187,7 @@ export default class Scene {
 	from(target, properties, options, offset = null) {
 		let isDOM = false
 		let input = target
-		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList || target instanceof window.SVGPathElement) {
 			isDOM = true
 			if (target instanceof window.NodeList) {
 				input = [...target]
@@ -227,6 +242,10 @@ export default class Scene {
 		})
 
 		this._add(moments, timings, options, 'removeClass')
+	}
+
+	onStart(callback) {
+		this.onStartCallback = callback
 	}
 
 	_add(moments, timings, options, direction) {
