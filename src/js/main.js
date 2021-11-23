@@ -68,7 +68,7 @@ const update = () => {
 }
 requestAnimationFrame(update)
 
-let scene = new Director.scene()
+let scene = new Director.Scene()
 
 scene.to(canvasObject, { circleOneRadius: 0, circleTwoRadius: (canvas.height / 2) - 1 }, { duration: 1.845, ease: 'linear' })
 scene.to(canvasObject, { circleThreeRadius: (canvas.height / 4) }, { duration: 1.5, ease: 'easeOutExpo' }, 0)
@@ -76,11 +76,11 @@ scene.to(canvasObject, { lineWidth: 100 }, { duration: 1, ease: 'linear' }, 0)
 scene.to(canvasObject, { squareSize: 100 }, { duration: 1, ease: 'easeOutExpo' }, 1)
 scene.to(canvasObject, { squareSizeTwo: 150 }, { duration: 0.75, ease: 'easeOutExpo' }, 1.25)
 scene.addClass(copyItemElements[0], { class: 'show' }, { toggle: true }, 0)
-scene.addClass(copyItemElements[1], { class: 'show' }, { toggle: true }, 0.4)
+scene.fromTo(copyItemElements[1], { opacity: [0, 1], translateX: [-100, 100] }, { duration: 1 }, 0.4)
 scene.addClass(copyItemElements[2], { class: 'show' }, { toggle: true }, 0.8)
 scene.addClass(hiddenElement, { class: 'show' }, { toggle: true }, 2)
 
 const element = document.querySelector('.sticky-element')
-const camera = new Director.camera(element, scene, { pinned: true, offset: 155 })
+const camera = new Director.Camera(element, scene, { pinned: true, offset: 155 })
 
 const h1 = document.querySelector('h1')

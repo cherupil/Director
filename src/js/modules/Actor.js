@@ -18,7 +18,7 @@ export default class Actor {
 		this.setProperties()
 	}
 
-	getTransformMatrix(matrix) {
+	_getTransformMatrix(matrix) {
 		if (matrix === 'none' || matrix === undefined) {
 			return {
 				translateX: 0,
@@ -43,34 +43,56 @@ export default class Actor {
 		}
 	}
 
+	_getTransformPercentage(property, value) {
+		if (property === 'translateX') {
+			return value *= (this.bounds.width / 100)
+		} else {
+			return value *= (this.bounds.height /100)
+		}
+	}
+
 	setProperties() {
 		this.actions = []
 		if (this.isDOM) {
 			const style = getComputedStyle(this.target)
-			this.transformMatrix = this.getTransformMatrix(style['transform'])
+			this.transformMatrix = this._getTransformMatrix(style['transform'])
 			for (const property in this.properties) {
 				if (this.transformPropertyKeys.includes(property)) {
 					this.hasTransform = true
 					if (property === 'scale') {
-						this.actions.push(new Action(this.transformMatrix, 'scaleX', this.properties['scale'], parseFloat(this.transformMatrix['scaleX']), null, this.direction))
-						this.actions.push(new Action(this.transformMatrix, 'scaleY', this.properties['scale'], parseFloat(this.transformMatrix['scaleY']), null, this.direction))
-					} else if (((property === 'translateX') || (property === 'translateY')) && this.isDOM) {
-						let value = this.properties[property]
-						if (property === 'translateX') {
-							value *= (this.bounds.width / 100)
+						if (this.direction === 'fromTo') {
+							this.actions.push(new Action(this.transformMatrix, 'scaleX', this.properties['scale'][1], this.properties['scale'][0], null, this.direction))
+							this.actions.push(new Action(this.transformMatrix, 'scaleY', this.properties['scale'][1], this.properties['scale'][0], null, this.direction))
 						} else {
-							value *= (this.bounds.height / 100)
+							this.actions.push(new Action(this.transformMatrix, 'scaleX', this.properties['scale'], parseFloat(this.transformMatrix['scaleX']), null, this.direction))
+							this.actions.push(new Action(this.transformMatrix, 'scaleY', this.properties['scale'], parseFloat(this.transformMatrix['scaleY']), null, this.direction))
 						}
-						this.actions.push(new Action(this.transformMatrix, property, value, parseFloat(this.transformMatrix[property]), null, this.direction))
+					} else if (((property === 'translateX') || (property === 'translateY')) && this.isDOM) {
+						if (this.direction === 'fromTo') {
+							const targetValue = this._getTransformPercentage(property, this.properties[property][1])
+							const startValue = this._getTransformPercentage(property, this.properties[property][0])
+							this.actions.push(new Action(this.transformMatrix, property, targetValue, startValue, null, this.direction))
+						} else {
+							let value = this._getTransformPercentage(property, this.properties[property])
+							this.actions.push(new Action(this.transformMatrix, property, value, parseFloat(this.transformMatrix[property]), null, this.direction))
+						}
 					} else {
-						this.actions.push(new Action(this.transformMatrix, property, this.properties[property], parseFloat(this.transformMatrix[property]), null, this.direction))
+						if (this.direction === 'fromTo') {
+							this.actions.push(new Action(this.transformMatrix, property, this.properties[property][1], this.properties[property][0], null, this.direction))
+						} else {
+							this.actions.push(new Action(this.transformMatrix, property, this.properties[property], parseFloat(this.transformMatrix[property]), null, this.direction))
+						}
 					}
 				} else {
 					if (property !== 'class') {
-						const units = this.unitExpression.exec(style[property])
-						const value = parseFloat(style[property].split(units)[0])
+						if (this.direction === 'fromTo') {
+							this.actions.push(new Action(this.target.style, property, this.properties[property][1], this.properties[property][0], null, this.direction))
+						} else {
+							const units = this.unitExpression.exec(style[property])
+							const value = parseFloat(style[property].split(units)[0])
 
-						this.actions.push(new Action(this.target.style, property, this.properties[property], value, units, this.direction))
+							this.actions.push(new Action(this.target.style, property, this.properties[property], value, units, this.direction))
+						}
 					} else {
 						this.actions.push(new Action(this.target, property, this.properties[property], null, null, this.direction))
 					}
@@ -78,7 +100,11 @@ export default class Actor {
 			}
 		} else {
 			for (const property in this.properties) {
-				this.actions.push(new Action(this.target, property, this.properties[property], this.target[property], null, this.direction))
+				if (this.direction === 'fromTo') {
+					this.actions.push(new Action(this.target, property, this.properties[property][1], this.properties[property][0], null, this.direction))
+				} else {
+					this.actions.push(new Action(this.target, property, this.properties[property], this.target[property], null, this.direction))
+				}
 			}
 		}
 

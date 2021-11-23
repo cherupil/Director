@@ -102,16 +102,16 @@ h1 {
 }
 
 .copy-item {
-	opacity: 0;
+	opacity: 0.5;
 	position: absolute;
 	transform: translateY(25px);
-	transition: opacity 400ms ease, transform 400ms ease;
+	//transition: opacity 400ms ease, transform 400ms ease;
 	width: 300px;
 	will-change: transform;
 }
 
 .copy-item.show {
-	opacity: 1;
+	opacity: 0;
 	transform: translateY(0px);
 }
 

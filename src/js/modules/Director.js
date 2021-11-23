@@ -44,6 +44,26 @@ export default class Director {
 		this._animate(actors, timings, options)
 	}
 
+	static fromTo(target, properties, options) {
+		let isDOM = false
+		let input = target
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
+			isDOM = true
+			if (target instanceof window.NodeList) {
+				input = [...target]
+			}
+		}
+		const targets = this._setTargets(input)
+		const timings = this._setTimings(targets, options)
+
+		const actors = []
+		targets.forEach(target => {
+			actors.push(new Actor(target, properties, 'fromTo', isDOM))
+		})
+
+		this._animate(actors, timings, options)
+	}
+
 	static addClass(target, properties, options) {
 		let isDOM = false
 		let input = target

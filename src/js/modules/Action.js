@@ -26,6 +26,12 @@ export default class Action {
 					delta: this.currentValue - this.targetValue
 				}
 				break
+			case 'fromTo':
+				this.propertyDelta = {
+					start: this.currentValue,
+					delta: this.targetValue - this.currentValue
+				}
+				break
 			case 'addClass':
 				this.classFunction = () => {
 					this.target.classList.add(this.targetValue)

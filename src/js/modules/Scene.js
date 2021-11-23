@@ -204,6 +204,26 @@ export default class Scene {
 		this._add(moments, timings, options, 'from')
 	}
 
+	fromTo(target, properties, options, offset = null) {
+		let isDOM = false
+		let input = target
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList || target instanceof window.SVGPathElement) {
+			isDOM = true
+			if (target instanceof window.NodeList) {
+				input = [...target]
+			}
+		}
+		const targets = this._setTargets(input)
+		const timings = this._setTimings(targets, options, offset)
+
+		const moments = []
+		targets.forEach(target => {
+			moments.push(new Actor(target, properties, 'fromTo', isDOM))
+		})
+
+		this._add(moments, timings, options, 'fromTo')
+	}
+
 	addClass(target, properties, options, offset = null) {
 		let isDOM = false
 		let input = target
