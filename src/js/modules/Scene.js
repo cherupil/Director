@@ -126,17 +126,23 @@ export default class Scene {
 				}
 				action.started = true
 			} else {
-				if (action.started && action.direction === 'from') {
-					if (action.timings.start !== 0) {
-						action.moments.forEach(moment => {
-							moment.update(1)
-						})
+				if (action.started && ((action.direction === 'from') || (action.direction === 'fromTo'))) {
+					if (action.direction === 'from') {
+						if (action.timings.start !== 0) {
+							action.moments.forEach(moment => {
+								moment.update(1)
+							})
+						} else {
+							action.moments.forEach(moment => {
+								moment.update(0)
+							})
+						}
 					} else {
 						action.moments.forEach(moment => {
 							moment.update(0)
 						})
 					}
-				} else if (!action.started && !action.initialized && action.direction === 'from') {
+				} else if (!action.started && !action.initialized && ((action.direction === 'from') || (action.direction === 'fromTo'))) {
 					action.moments.forEach(moment => {
 						moment.update(0)
 					})
