@@ -121,10 +121,10 @@ export default class Director {
 				options.onUpdate?.()
 				requestAnimationFrame(update)
 			} else {
-				options.onComplete?.()
 				actors.forEach(actor => {
 					actor.update(1)
 				})
+				options.onComplete?.()
 			}
 		}
 

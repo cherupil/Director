@@ -96,6 +96,19 @@ export default class Scene {
 		this.currentAnimationFrame = requestAnimationFrame(update)
 	}
 
+	setProgressImmediately(progress) {
+		this.progress = progress
+
+		if ((!this.started) && (this.progress > 0)) {
+			if (this.onStartCallback) {
+				this.onStartCallback()
+			}
+			this.started = true
+		}
+
+		this._animate()
+	}
+
 	_animate() {
 		this.currentTime = this.duration * this.progress
 
@@ -158,10 +171,10 @@ export default class Scene {
 
 			if (action.progress >= 1) {
 				if (!action.completed) {
-					action.options.onComplete?.()
 					action.moments.forEach(moment => {
 						moment.update(1)
 					})
+					action.options.onComplete?.()
 				}
 				action.completed = true
 			} else {
@@ -173,7 +186,7 @@ export default class Scene {
 	to(target, properties, options, offset = null) {
 		let isDOM = false
 		let input = target
-		if (target instanceof window.HTMLElement || target instanceof window.NodeList || target instanceof window.SVGPathElement) {
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList || target instanceof window.SVGPathElement || target instanceof window.SVGElement || target instanceof window.SVGCircleElement) {
 			isDOM = true
 			if (target instanceof window.NodeList) {
 				input = [...target]
@@ -193,7 +206,7 @@ export default class Scene {
 	from(target, properties, options, offset = null) {
 		let isDOM = false
 		let input = target
-		if (target instanceof window.HTMLElement || target instanceof window.NodeList || target instanceof window.SVGPathElement) {
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList || target instanceof window.SVGPathElement || target instanceof window.SVGElement || target instanceof window.SVGCircleElement) {
 			isDOM = true
 			if (target instanceof window.NodeList) {
 				input = [...target]
@@ -213,7 +226,7 @@ export default class Scene {
 	fromTo(target, properties, options, offset = null) {
 		let isDOM = false
 		let input = target
-		if (target instanceof window.HTMLElement || target instanceof window.NodeList || target instanceof window.SVGPathElement) {
+		if (target instanceof window.HTMLElement || target instanceof window.NodeList || target instanceof window.SVGPathElement || target instanceof window.SVGElement || target instanceof window.SVGCircleElement) {
 			isDOM = true
 			if (target instanceof window.NodeList) {
 				input = [...target]
