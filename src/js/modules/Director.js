@@ -118,17 +118,23 @@ export default class Director {
 			})
 
 			if (progress < 1) {
-				options.onUpdate?.()
+				if (options.onUpdate) {
+					options.onUpdate()
+				}
 				requestAnimationFrame(update)
 			} else {
 				actors.forEach(actor => {
 					actor.update(1)
 				})
-				options.onComplete?.()
+				if (options.onComplete) {
+					options.onComplete()
+				}
 			}
 		}
 
-		options.onStart?.()
+		if (options.onStart) {
+			options.onStart()
+		}
 		const startTime = performance.now()
 		requestAnimationFrame(update)
 	}

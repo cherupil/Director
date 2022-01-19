@@ -22,14 +22,13 @@ export default class Camera {
 			this.offset = this.element.parentElement.offsetTop
 			this.offset += this.options.beginOnIntersection ? -this.element.parentElement.offsetHeight : 0
 			this.scrollHeight = this.scene.duration
-			this._scrollListener = this._pinnedScrollListener.bind(this)
 			this._setScrollHeight()
 			this.scrollHeight += this.options.offset ? this.options.offset : 0
 		} else {
-			this.offset = this.element.offsetTop
-			this.scrollHeight = this.element.getBoundingClientRect().height + this.offset
-			this._scrollListener = this._defaultScrollListener.bind(this)
+			this.offset = this.element.getBoundingClientRect().top - this.viewportHeight
+			this.scrollHeight = this.viewportHeight + this.element.offsetHeight
 		}
+		this._scrollListener = this._scrollListener.bind(this)
 
 		this._createObserver()
 	}
@@ -49,13 +48,7 @@ export default class Camera {
 		this.element.parentElement.style.height = `${(totalHeight / this.viewportHeight) * 100}vh`
 	}
 
-	_defaultScrollListener(event) {
-		this.scrollDistance = event.target.scrollingElement.scrollTop
-		this.scrollPosition = (this.scrollDistance + this.viewportHeight) - this.offset
-		this.progress = Math.min(Math.max(this.scrollPosition / this.scrollHeight, 0), 1)
-	}
-
-	_pinnedScrollListener(event) {
+	_scrollListener(event) {
 		this.scrollDistance = event.target.scrollingElement.scrollTop
 		this.scrollPosition = this.scrollDistance - this.offset
 		this.progress = Math.min(Math.max(this.scrollPosition / this.scrollHeight, 0), 1)

@@ -116,7 +116,9 @@ export default class Scene {
 			action.progress = (this.currentTime - action.timings.start) / action.timings.totalDuration
 
 			if (action.started && !action.completed) {
-				action.options.onUpdate?.()
+				if (action.options.onUpdate) {
+					action.options.onUpdate()
+				}
 				action.moments.forEach((moment, index) => {
 					const staggerTime = Math.max((this.currentTime - action.timings.start) - (action.timings.stagger * index), 0)
 					const staggerProgress = Math.min(staggerTime / action.timings.duration, 1)
@@ -130,7 +132,9 @@ export default class Scene {
 
 			if (action.progress > 0) {
 				if (!action.started) {
-					action.options.onStart?.()
+					if (action.options.onStart) {
+						action.options.onStart()
+					}
 					if (action.timings.start !== 0 && action.direction !== 'from') {
 						action.moments.forEach(moment => {
 							moment.setProperties()
@@ -174,7 +178,9 @@ export default class Scene {
 					action.moments.forEach(moment => {
 						moment.update(1)
 					})
-					action.options.onComplete?.()
+					if (action.options.onComplete) {
+						action.options.onComplete()
+					}
 				}
 				action.completed = true
 			} else {

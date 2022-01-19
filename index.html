@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Animation</title>
+        <title>Director</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -10,33 +10,86 @@
     </head>
     <body>
     	<main>
-    		<canvas id="webgl"></canvas>
-    		<section>
-    			<div class="blank-section"><h1>Let’s Go!</h1></div>
-				<div class="sticky-wrapper">
-					<div class="sticky-element">
-						<div class="copy-wrapper">
-							<div class="copy-item">
-								<p>I’ve finally added support for animating <em>DOM properties</em>, so we’re no longer limited to animating JavaScript&nbsp;objects.</p>
-							</div>
-							<div class="copy-item">
-								<p>Next I’ve added support for animating <em>CSS Transforms</em>. Right now just 2D transforms, but later down the line I’ll add 3D transform&nbsp;support.</p>
-							</div>
-							<div class="copy-item">
-								<p>Lastly, I’ve made <em>CSS class toggling</em> a part of the library, so if you want to animate purely through adding and removing classes, you can do that&nbsp;too.</p>
-							</div>
-						</div>
-						<canvas class="canvas"></canvas>
+    		<section class="hero">
+    			<h1><figure></figure>Director</h1>
+    			<p>A simple tweening library for animating DOM elements and JavaScript objects.</p>
+    		</section>
+    		<section class="dom">
+				<h2>Animate DOM Elements</h2>
+				<div class="dom-to">
+					<div class="card-wrap">
+						<article class="dom-to--card">
+	                        <h4>Director.to()</h4>
+	                        <hr />
+	                        <p>A 'to' tween will allow you to animate properties from their current state to a specified end state.</p>
+	                    </article>
 					</div>
-					<div class="hidden-element">
-						<div class="hidden-element--sticky">
-							<p>Oh and one more thing… you can implement this <em>cool hiding technique</em> with a little bit of CSS and the added pinning offset capability.</p>
+                    <div class="button-wrap">
+                    	<button id="dom-to--button">Play 'to' tween</button>
+                    	<button id="dom-to--reset" class="reset">Reset</button>
+                    </div>
+				</div>
+				<div class="dom-from">
+					<div class="card-wrap">
+						<article class="dom-from--card">
+	                        <h4>Director.from()</h4>
+	                        <hr />
+	                        <p>A 'from' tween will allow you to animate properties from a specified state to their current state.</p>
+	                    </article>
+					</div>
+                    <div class="button-wrap">
+                    	<button id="dom-from--button">Play 'from' tween</button>
+                    	<button id="dom-from--reset" class="reset">Reset</button>
+                    </div>
+				</div>
+				<div class="dom-fromto">
+					<div class="card-wrap">
+						<article class="dom-fromto--card">
+	                        <h4>Director.fromTo</h4>
+	                        <hr />
+	                        <p>A 'fromTo' tween will allow you to animate properties by providing both a beginning state and an ending state.</p>
+	                    </article>
+					</div>
+                    <div class="button-wrap">
+                    	<button id="dom-fromto--button">Play 'fromTo' tween</button>
+                    	<button id="dom-fromto--reset" class="reset">Reset</button>
+                    </div>
+				</div>
+				<h3>Create a Scene</h3>
+				<p>Tie multiple animations together into one choreographed sequence.</p>
+				<div class="stagger-scene">
+					<div class="stagger">
+						<div class="stagger-background"></div>
+						<div class="stagger-background--two">Together</div>
+						<div class="stagger-item">Stagger</div>
+						<div class="stagger-item">Grouped</div>
+						<div class="stagger-item">Items</div>
+					</div>
+					<div class="button-wrap">
+						<button id="dom-scene--button">Play Scene</button>
+						<button id="dom-scene--reset" class="reset">Reset</button>
+					</div>
+				</div>
+				<h3>Add a Camera</h3>
+				<p>Scrub through a scene by scrolling</p>
+				<div class="stagger-camera-wrap">
+					<div class="stagger-camera">
+						<div class="stagger">
+							<div class="stagger-background"></div>
+							<div class="stagger-background--two">Together</div>
+							<div class="stagger-item">Stagger</div>
+							<div class="stagger-item">Grouped</div>
+							<div class="stagger-item">Items</div>
 						</div>
 					</div>
 				</div>
-				<div class="blank-section"><h1>&#128561;</h1></div>
+    		</section>
+    		<section class="object">
+    			<h2>Animate JavaScript Objects</h2>
+    			<canvas></canvas>
+    			<input type="range" min="0" max="1" step="0.01">
     		</section>
     	</main>
-        <script type="module" src="dist/js/main.js"></script>
+        <script src="dist/js/demo.js"></script>
     </body>
 </html>
