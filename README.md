@@ -27,7 +27,19 @@ A 'fromTo' tween will allow you to animate properties by providing both a beginn
 Director.fromTo(element, { opacity: [1, 0], translateY: [100, -100] }, { duration: 1, ease: 'easeInOutQuint' })
 ```
 
-### stagger
+### addClass
+The addClass method will append a class to any DOM Node or NodeList. When used in a Scene, the 'toggle' attribute can be set if the class is to be removed when the Scene progress is set prior to the addClass animation, such as when rewinding.
+```javascript
+scene.addClass(element, { class: 'show' }, { toggle: true }, 2)
+````
+
+### removeClass
+The removeClass method will remove a class from any DOM Node or NodeList. When used in a Scene, the 'toggle' attribute can be set if the class is to be added when the Scene progress is set prior to the addClass animation, such as when rewinding.
+```javascript
+scene.removeClass(element, { class: 'hidden' }, { toggle: true }, 2)
+````
+
+### Stagger
 The stagger attribute can be used to stagger the timing of each animated element by a set duration if the target is either a NodeList or an array of JavaScript objects.
 ```javascript
 Director.fromTo(elements, { opacity: [1, 0], translateY: [100, -100] }, { duration: 1, stagger: 0.1, ease: 'easeInOutQuint' })
@@ -114,6 +126,13 @@ const update = () => {
 }
 window.requestAnimationFrame(update)
 ```
+
+### Methods
+The 'setScene' method can be used to assign a new scene to an existing Camera object. The 'resize' method can be called by an external resize event listener to recalculate the proper scrolling progress of a Scene.
+```javascript
+camera.setScene(newScene)
+camera.resize()
+````
 
 ## License
 Licensed under [the MIT license](LICENSE.md).

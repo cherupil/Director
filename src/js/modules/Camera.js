@@ -3,10 +3,10 @@ export default class Camera {
 		this.element = element
 		this.scene = scene
 		this.options = options
-		this.init()
+		this._init()
 	}
 
-	init() {
+	_init() {
 		this.observer = null
 		this.progress = 0
 
@@ -40,7 +40,7 @@ export default class Camera {
 
 	setScene(scene) {
 		this.scene = scene
-		this.init()
+		this._init()
 	}
 
 	_setScrollHeight() {
