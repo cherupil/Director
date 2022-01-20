@@ -106,6 +106,12 @@ h2 {
 	width: 100%;
 }
 
+.dom-class {
+	margin-bottom: 120px;
+	max-width: 392px;
+	width: 100%;
+}
+
 .card-wrap {
 	background-color: var(--blue-200);
 	border-radius: 48px;
@@ -113,7 +119,14 @@ h2 {
 	padding: 16px;
 }
 
-.dom-to--card, .dom-from--card, .dom-fromto--card {
+.dom-class--card-wrap {
+	background-color: var(--blue-200);
+	border-radius: 48px;
+	margin-bottom: 32px;
+	padding: 16px;
+}
+
+.dom-to--card, .dom-from--card, .dom-fromto--card, .dom-class--card {
 	align-items: flex-start;
 	background-color: white;
 	border-radius: 32px;
@@ -123,8 +136,13 @@ h2 {
 	font-family: system-ui, sans-serif;
 	padding: 32px 32px 24px 32px;
 	text-align: left;
+	transition: background-color 400ms ease;
 	width: 360px;
 	will-change: transform;
+}
+
+.dom-class--card.dark {
+	background-color: var(--blue-500);
 }
 
 .button-wrap {
@@ -194,6 +212,11 @@ h4 {
 	font-size: 24px;
 	font-weight: 600;
 	margin-bottom: 16px;
+	transition: color 400ms ease;
+}
+
+.dark h4 {
+	color: var(--blue-100);
 }
 
 hr {
@@ -201,10 +224,15 @@ hr {
 	border: none;
 	height: 1px;
 	margin-top: 0;
+	transition: background-color 400ms ease;
 	width: 100%;
 }
 
-section.dom .card-wrap p {
+.dark hr {
+	background-color: var(--blue-400);
+}
+
+section.dom .card-wrap p, section.dom .dom-class--card-wrap p {
 	color: black;
 	font-size: 16px;
 	font-weight: 400;
@@ -212,7 +240,12 @@ section.dom .card-wrap p {
 	line-height: 1.5;
 	margin-bottom: 8px;
 	text-align: left;
+	transition: color 400ms ease;
 	width: 100%;
+}
+
+section.dom .dom-class--card-wrap .dark p {
+	color: var(--blue-100);
 }
 
 h3 {
@@ -255,6 +288,7 @@ p {
 	display: flex;
 	flex-direction: column;
 	overflow: visible;
+	padding: 0 16px;
 	width: 100%;
 }
 

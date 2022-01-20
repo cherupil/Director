@@ -67,6 +67,7 @@ export default class Director {
 	static addClass(target, properties, options) {
 		let isDOM = false
 		let input = target
+		let optionsObject = options ? options : {}
 		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
 			isDOM = true
 			if (target instanceof window.NodeList) {
@@ -74,19 +75,20 @@ export default class Director {
 			}
 		}
 		const targets = this._setTargets(input)
-		const timings = this._setTimings(targets, options)
+		const timings = this._setTimings(targets, optionsObject)
 
 		const actors = []
 		targets.forEach(target => {
 			actors.push(new Actor(target, properties, 'addClass', isDOM))
 		})
 
-		this._animate(actors, timings, options)
+		this._animate(actors, timings, optionsObject)
 	}
 
 	static removeClass(target, properties, options) {
 		let isDOM = false
 		let input = target
+		let optionsObject = options ? options : {}
 		if (target instanceof window.HTMLElement || target instanceof window.NodeList) {
 			isDOM = true
 			if (target instanceof window.NodeList) {
@@ -94,14 +96,14 @@ export default class Director {
 			}
 		}
 		const targets = this._setTargets(input)
-		const timings = this._setTimings(targets, options)
+		const timings = this._setTimings(targets, optionsObject)
 
 		const actors = []
 		targets.forEach(target => {
 			actors.push(new Actor(target, properties, 'removeClass', isDOM))
 		})
 
-		this._animate(actors, timings, options)
+		this._animate(actors, timings, optionsObject)
 	}
 
 	static _animate(actors, timings, options) {

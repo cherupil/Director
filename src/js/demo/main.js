@@ -17,10 +17,6 @@ const calculateTranslateXOffset = () => {
 
 DOMTranslateX = calculateTranslateXOffset()
 
-window.addEventListener('resize', () => {
-	DOMTranslateX = calculateTranslateXOffset()
-})
-
 /*
 DOM Tweens
 */
@@ -79,6 +75,19 @@ DOMFromToButton.addEventListener('click', () => {
 DOMFromToReset.addEventListener('click', () => {
 	DOMFromToElement.style.transform = ``
 	DOMFromToButton.removeAttribute('disabled')
+})
+
+//Add/Remove Class
+const DOMClassAdd = document.getElementById('dom-class--add')
+const DOMClassRemove = document.getElementById('dom-class--remove')
+const DOMClassElement = document.querySelector('.dom-class--card')
+
+DOMClassAdd.addEventListener('click', () => {	
+	Director.addClass(DOMClassElement, { class: 'dark' })
+})
+
+DOMClassRemove.addEventListener('click', () => {
+	Director.removeClass(DOMClassElement, { class: 'dark' })
 })
 
 /*
@@ -181,4 +190,9 @@ JSScene.setProgress(0.5)
 const input = document.querySelector('input')
 input.addEventListener('input', event => {
 	JSScene.setProgress(event.target.value)
+})
+
+window.addEventListener('resize', () => {
+	DOMTranslateX = calculateTranslateXOffset()
+	DOMCamera.resize()
 })

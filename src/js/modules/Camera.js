@@ -25,7 +25,7 @@ export default class Camera {
 			this._setScrollHeight()
 			this.scrollHeight += this.options.offset ? this.options.offset : 0
 		} else {
-			this.offset = this.element.getBoundingClientRect().top - this.viewportHeight
+			this.offset = window.pageYOffset + this.element.getBoundingClientRect().top - this.viewportHeight
 			this.scrollHeight = this.viewportHeight + this.element.offsetHeight
 		}
 		this._scrollListener = this._scrollListener.bind(this)
@@ -35,7 +35,16 @@ export default class Camera {
 
 	resize() {
 		this.viewportHeight = window.innerHeight
-		this._setScrollHeight()
+		if (this.options.pinned) {
+			this.offset = this.element.parentElement.offsetTop
+			this.offset += this.options.beginOnIntersection ? -this.element.parentElement.offsetHeight : 0
+			this.scrollHeight = this.scene.duration
+			this._setScrollHeight()
+			this.scrollHeight += this.options.offset ? this.options.offset : 0
+		} else {
+			this.offset = window.pageYOffset + this.element.getBoundingClientRect().top - this.viewportHeight
+			this.scrollHeight = this.viewportHeight + this.element.offsetHeight
+		}
 	}
 
 	setScene(scene) {

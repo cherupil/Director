@@ -25,11 +25,11 @@
   var require_director_min = __commonJS({
     "dist/js/director.min.js"(exports) {
       var y = Object.defineProperty;
-      var D = (m) => y(m, "__esModule", { value: true });
-      var b = (m, t) => {
-        D(m);
+      var D = (f) => y(f, "__esModule", { value: true });
+      var b = (f, t) => {
+        D(f);
         for (var s in t)
-          y(m, s, { get: t[s], enumerable: true });
+          y(f, s, { get: t[s], enumerable: true });
       };
       b(exports, { default: () => w });
       var p = class {
@@ -147,10 +147,10 @@
           return (t = t - 1) * t * ((s + 1) * t + s) + 1;
         }
       };
-      var f = class {
+      var m = class {
         static multiply2DMatricies(t, s) {
-          let e = t[0 * 3 + 0], i = t[0 * 3 + 1], n = t[0 * 3 + 2], r = t[1 * 3 + 0], a = t[1 * 3 + 1], o = t[1 * 3 + 2], h = t[2 * 3 + 0], l = t[2 * 3 + 1], d = t[2 * 3 + 2], g = s[0 * 3 + 0], T = s[0 * 3 + 1], E = s[0 * 3 + 2], O = s[1 * 3 + 0], I = s[1 * 3 + 1], S = s[1 * 3 + 2], x = s[2 * 3 + 0], L = s[2 * 3 + 1], C = s[2 * 3 + 2];
-          return [g * e + T * r + E * h, g * i + T * a + E * l, g * n + T * o + E * d, O * e + I * r + S * h, O * i + I * a + S * l, O * n + I * o + S * d, x * e + L * r + C * h, x * i + L * a + C * l, x * n + L * o + C * d];
+          let e = t[0 * 3 + 0], i = t[0 * 3 + 1], n = t[0 * 3 + 2], r = t[1 * 3 + 0], a = t[1 * 3 + 1], h = t[1 * 3 + 2], o = t[2 * 3 + 0], c = t[2 * 3 + 1], d = t[2 * 3 + 2], g = s[0 * 3 + 0], T = s[0 * 3 + 1], O = s[0 * 3 + 2], E = s[1 * 3 + 0], I = s[1 * 3 + 1], S = s[1 * 3 + 2], x = s[2 * 3 + 0], L = s[2 * 3 + 1], C = s[2 * 3 + 2];
+          return [g * e + T * r + O * o, g * i + T * a + O * c, g * n + T * h + O * d, E * e + I * r + S * o, E * i + I * a + S * c, E * n + I * h + S * d, x * e + L * r + C * o, x * i + L * a + C * c, x * n + L * h + C * d];
         }
         static translate2D(t, s) {
           return [1, 0, t, 0, 1, s, 0, 0, 1];
@@ -162,7 +162,7 @@
           return [Math.cos(t), -Math.sin(t), 0, Math.sin(t), Math.cos(t), 0, 0, 0, 1];
         }
       };
-      var c = class {
+      var l = class {
         constructor(t, s, e, i, n, r) {
           this.target = t, this.property = s, this.targetValue = e, this.currentValue = i, this.units = n, this.direction = r, this.propertyDelta = {}, this.setProperties();
         }
@@ -217,29 +217,29 @@
             for (let s in this.properties)
               if (this.transformPropertyKeys.includes(s))
                 if (this.hasTransform = true, s === "scale")
-                  this.direction === "fromTo" ? (this.actions.push(new c(this.transformMatrix, "scaleX", this.properties.scale[1], this.properties.scale[0], null, this.direction)), this.actions.push(new c(this.transformMatrix, "scaleY", this.properties.scale[1], this.properties.scale[0], null, this.direction))) : (this.actions.push(new c(this.transformMatrix, "scaleX", this.properties.scale, parseFloat(this.transformMatrix.scaleX), null, this.direction)), this.actions.push(new c(this.transformMatrix, "scaleY", this.properties.scale, parseFloat(this.transformMatrix.scaleY), null, this.direction)));
+                  this.direction === "fromTo" ? (this.actions.push(new l(this.transformMatrix, "scaleX", this.properties.scale[1], this.properties.scale[0], null, this.direction)), this.actions.push(new l(this.transformMatrix, "scaleY", this.properties.scale[1], this.properties.scale[0], null, this.direction))) : (this.actions.push(new l(this.transformMatrix, "scaleX", this.properties.scale, parseFloat(this.transformMatrix.scaleX), null, this.direction)), this.actions.push(new l(this.transformMatrix, "scaleY", this.properties.scale, parseFloat(this.transformMatrix.scaleY), null, this.direction)));
                 else if ((s === "translateX" || s === "translateY") && this.isDOM)
                   if (this.direction === "fromTo") {
                     let e = this._getTransformPercentage(s, this.properties[s][1]), i = this._getTransformPercentage(s, this.properties[s][0]);
-                    this.actions.push(new c(this.transformMatrix, s, e, i, null, this.direction));
+                    this.actions.push(new l(this.transformMatrix, s, e, i, null, this.direction));
                   } else {
                     let e = this._getTransformPercentage(s, this.properties[s]);
-                    this.actions.push(new c(this.transformMatrix, s, e, parseFloat(this.transformMatrix[s]), null, this.direction));
+                    this.actions.push(new l(this.transformMatrix, s, e, parseFloat(this.transformMatrix[s]), null, this.direction));
                   }
                 else
-                  this.direction === "fromTo" ? this.actions.push(new c(this.transformMatrix, s, this.properties[s][1], this.properties[s][0], null, this.direction)) : this.actions.push(new c(this.transformMatrix, s, this.properties[s], parseFloat(this.transformMatrix[s]), null, this.direction));
+                  this.direction === "fromTo" ? this.actions.push(new l(this.transformMatrix, s, this.properties[s][1], this.properties[s][0], null, this.direction)) : this.actions.push(new l(this.transformMatrix, s, this.properties[s], parseFloat(this.transformMatrix[s]), null, this.direction));
               else if (s !== "class")
                 if (this.direction === "fromTo")
-                  this.actions.push(new c(this.target.style, s, this.properties[s][1], this.properties[s][0], null, this.direction));
+                  this.actions.push(new l(this.target.style, s, this.properties[s][1], this.properties[s][0], null, this.direction));
                 else {
                   let e = this.unitExpression.exec(t[s]), i = parseFloat(t[s].split(e)[0]);
-                  this.actions.push(new c(this.target.style, s, this.properties[s], i, e, this.direction));
+                  this.actions.push(new l(this.target.style, s, this.properties[s], i, e, this.direction));
                 }
               else
-                this.actions.push(new c(this.target, s, this.properties[s], null, null, this.direction));
+                this.actions.push(new l(this.target, s, this.properties[s], null, null, this.direction));
           } else
             for (let t in this.properties)
-              this.direction === "fromTo" ? this.actions.push(new c(this.target, t, this.properties[t][1], this.properties[t][0], null, this.direction)) : this.actions.push(new c(this.target, t, this.properties[t], this.target[t], null, this.direction));
+              this.direction === "fromTo" ? this.actions.push(new l(this.target, t, this.properties[t][1], this.properties[t][0], null, this.direction)) : this.actions.push(new l(this.target, t, this.properties[t], this.target[t], null, this.direction));
           for (let t of this.actions)
             t.setProperties();
         }
@@ -247,7 +247,7 @@
           for (let s of this.actions)
             s.update(t);
           if (this.hasTransform) {
-            let s = f.multiply2DMatricies(f.multiply2DMatricies(f.scale2D(this.transformMatrix.scaleX, this.transformMatrix.scaleY), f.rotate2D(this.transformMatrix.rotate * (Math.PI / 180))), f.translate2D(this.transformMatrix.translateX, this.transformMatrix.translateY));
+            let s = m.multiply2DMatricies(m.multiply2DMatricies(m.scale2D(this.transformMatrix.scaleX, this.transformMatrix.scaleY), m.rotate2D(this.transformMatrix.rotate * (Math.PI / 180))), m.translate2D(this.transformMatrix.translateX, this.transformMatrix.translateY));
             this.target.style.transform = `matrix(${s[0]}, ${s[3]}, ${s[1]}, ${s[4]}, ${s[2]}, ${s[5]})`;
           }
         }
@@ -311,42 +311,42 @@
         to(t, s, e, i = null) {
           let n = false, r = t;
           (t instanceof window.HTMLElement || t instanceof window.NodeList || t instanceof window.SVGPathElement || t instanceof window.SVGElement || t instanceof window.SVGCircleElement) && (n = true, t instanceof window.NodeList && (r = [...t]));
-          let a = this._setTargets(r), o = this._setTimings(a, e, i), h = [];
-          a.forEach((l) => {
-            h.push(new u(l, s, "to", n));
-          }), this._add(h, o, e, "to");
+          let a = this._setTargets(r), h = this._setTimings(a, e, i), o = [];
+          a.forEach((c) => {
+            o.push(new u(c, s, "to", n));
+          }), this._add(o, h, e, "to");
         }
         from(t, s, e, i = null) {
           let n = false, r = t;
           (t instanceof window.HTMLElement || t instanceof window.NodeList || t instanceof window.SVGPathElement || t instanceof window.SVGElement || t instanceof window.SVGCircleElement) && (n = true, t instanceof window.NodeList && (r = [...t]));
-          let a = this._setTargets(r), o = this._setTimings(a, e, i), h = [];
-          a.forEach((l) => {
-            h.push(new u(l, s, "from", n));
-          }), this._add(h, o, e, "from");
+          let a = this._setTargets(r), h = this._setTimings(a, e, i), o = [];
+          a.forEach((c) => {
+            o.push(new u(c, s, "from", n));
+          }), this._add(o, h, e, "from");
         }
         fromTo(t, s, e, i = null) {
           let n = false, r = t;
           (t instanceof window.HTMLElement || t instanceof window.NodeList || t instanceof window.SVGPathElement || t instanceof window.SVGElement || t instanceof window.SVGCircleElement) && (n = true, t instanceof window.NodeList && (r = [...t]));
-          let a = this._setTargets(r), o = this._setTimings(a, e, i), h = [];
-          a.forEach((l) => {
-            h.push(new u(l, s, "fromTo", n));
-          }), this._add(h, o, e, "fromTo");
+          let a = this._setTargets(r), h = this._setTimings(a, e, i), o = [];
+          a.forEach((c) => {
+            o.push(new u(c, s, "fromTo", n));
+          }), this._add(o, h, e, "fromTo");
         }
         addClass(t, s, e, i = null) {
           let n = false, r = t;
           (t instanceof window.HTMLElement || t instanceof window.NodeList) && (n = true, t instanceof window.NodeList && (r = [...t]));
-          let a = this._setTargets(r), o = this._setTimings(a, e, i), h = [];
-          a.forEach((l) => {
-            h.push(new u(l, s, "addClass", n));
-          }), this._add(h, o, e, "addClass");
+          let a = this._setTargets(r), h = this._setTimings(a, e, i), o = [];
+          a.forEach((c) => {
+            o.push(new u(c, s, "addClass", n));
+          }), this._add(o, h, e, "addClass");
         }
         removeClass(t, s, e, i = null) {
           let n = false, r = t;
           (t instanceof window.HTMLElement || t instanceof window.NodeList) && (n = true, t instanceof window.NodeList && (r = [...t]));
-          let a = this._setTargets(r), o = this._setTimings(a, e, i), h = [];
-          a.forEach((l) => {
-            h.push(new u(l, s, "removeClass", n));
-          }), this._add(h, o, e, "removeClass");
+          let a = this._setTargets(r), h = this._setTimings(a, e, i), o = [];
+          a.forEach((c) => {
+            o.push(new u(c, s, "removeClass", n));
+          }), this._add(o, h, e, "removeClass");
         }
         onStart(t) {
           this.onStartCallback = t;
@@ -361,22 +361,22 @@
         _setTimings(t, s, e) {
           let i = {}, n = s.duration ? s.duration * this.timeScale : 1, r = 0;
           e !== null ? r = e * this.timeScale : r = this.duration, i.stagger = s.stagger ? s.stagger * this.timeScale : 0;
-          let a = s.delay ? s.delay * this.timeScale + r : r, o = n + (t.length - 1) * i.stagger;
-          return i.start = a, i.end = a + o, i.duration = n, i.totalDuration = o, i.easing = p.get(s.ease), this.previousActionDuration = i.end, this.duration = Math.max(this.previousActionDuration, this.duration), i;
+          let a = s.delay ? s.delay * this.timeScale + r : r, h = n + (t.length - 1) * i.stagger;
+          return i.start = a, i.end = a + h, i.duration = n, i.totalDuration = h, i.easing = p.get(s.ease), this.previousActionDuration = i.end, this.duration = Math.max(this.previousActionDuration, this.duration), i;
         }
       };
       var M = class {
         constructor(t, s, e = {}) {
-          this.element = t, this.scene = s, this.options = e, this.init();
+          this.element = t, this.scene = s, this.options = e, this._init();
         }
-        init() {
-          this.observer = null, this.progress = 0, this.scrollDistance = 0, this.scrollPosition = 0, this.element.parentElement.style.height = "auto", this.viewportHeight = window.innerHeight, this.isIntersecting = false, this.options.pinned ? (this.offset = this.element.parentElement.offsetTop, this.offset += this.options.beginOnIntersection ? -this.element.parentElement.offsetHeight : 0, this.scrollHeight = this.scene.duration, this._setScrollHeight(), this.scrollHeight += this.options.offset ? this.options.offset : 0) : (this.offset = this.element.getBoundingClientRect().top - this.viewportHeight, this.scrollHeight = this.viewportHeight + this.element.offsetHeight), this._scrollListener = this._scrollListener.bind(this), this._createObserver();
+        _init() {
+          this.observer = null, this.progress = 0, this.scrollDistance = 0, this.scrollPosition = 0, this.element.parentElement.style.height = "auto", this.viewportHeight = window.innerHeight, this.isIntersecting = false, this.options.pinned ? (this.offset = this.element.parentElement.offsetTop, this.offset += this.options.beginOnIntersection ? -this.element.parentElement.offsetHeight : 0, this.scrollHeight = this.scene.duration, this._setScrollHeight(), this.scrollHeight += this.options.offset ? this.options.offset : 0) : (this.offset = window.pageYOffset + this.element.getBoundingClientRect().top - this.viewportHeight, this.scrollHeight = this.viewportHeight + this.element.offsetHeight), this._scrollListener = this._scrollListener.bind(this), this._createObserver();
         }
         resize() {
-          this.viewportHeight = window.innerHeight, this._setScrollHeight();
+          this.viewportHeight = window.innerHeight, this.options.pinned ? (this.offset = this.element.parentElement.offsetTop, this.offset += this.options.beginOnIntersection ? -this.element.parentElement.offsetHeight : 0, this.scrollHeight = this.scene.duration, this._setScrollHeight(), this.scrollHeight += this.options.offset ? this.options.offset : 0) : (this.offset = window.pageYOffset + this.element.getBoundingClientRect().top - this.viewportHeight, this.scrollHeight = this.viewportHeight + this.element.offsetHeight);
         }
         setScene(t) {
-          this.scene = t, this.init();
+          this.scene = t, this._init();
         }
         _setScrollHeight() {
           let t = this.scrollHeight + (this.options.beginOnIntersection ? 0 : this.viewportHeight);
@@ -397,54 +397,54 @@
         static to(t, s, e) {
           let i = false, n = t;
           (t instanceof window.HTMLElement || t instanceof window.NodeList) && (i = true, t instanceof window.NodeList && (n = [...t]));
-          let r = this._setTargets(n), a = this._setTimings(r, e), o = [];
-          r.forEach((h) => {
-            o.push(new u(h, s, "to", i));
-          }), this._animate(o, a, e);
+          let r = this._setTargets(n), a = this._setTimings(r, e), h = [];
+          r.forEach((o) => {
+            h.push(new u(o, s, "to", i));
+          }), this._animate(h, a, e);
         }
         static from(t, s, e) {
           let i = false, n = t;
           (t instanceof window.HTMLElement || t instanceof window.NodeList) && (i = true, t instanceof window.NodeList && (n = [...t]));
-          let r = this._setTargets(n), a = this._setTimings(r, e), o = [];
-          r.forEach((h) => {
-            o.push(new u(h, s, "from", i));
-          }), this._animate(o, a, e);
+          let r = this._setTargets(n), a = this._setTimings(r, e), h = [];
+          r.forEach((o) => {
+            h.push(new u(o, s, "from", i));
+          }), this._animate(h, a, e);
         }
         static fromTo(t, s, e) {
           let i = false, n = t;
           (t instanceof window.HTMLElement || t instanceof window.NodeList) && (i = true, t instanceof window.NodeList && (n = [...t]));
-          let r = this._setTargets(n), a = this._setTimings(r, e), o = [];
-          r.forEach((h) => {
-            o.push(new u(h, s, "fromTo", i));
-          }), this._animate(o, a, e);
+          let r = this._setTargets(n), a = this._setTimings(r, e), h = [];
+          r.forEach((o) => {
+            h.push(new u(o, s, "fromTo", i));
+          }), this._animate(h, a, e);
         }
         static addClass(t, s, e) {
-          let i = false, n = t;
+          let i = false, n = t, r = e || {};
           (t instanceof window.HTMLElement || t instanceof window.NodeList) && (i = true, t instanceof window.NodeList && (n = [...t]));
-          let r = this._setTargets(n), a = this._setTimings(r, e), o = [];
-          r.forEach((h) => {
-            o.push(new u(h, s, "addClass", i));
-          }), this._animate(o, a, e);
+          let a = this._setTargets(n), h = this._setTimings(a, r), o = [];
+          a.forEach((c) => {
+            o.push(new u(c, s, "addClass", i));
+          }), this._animate(o, h, r);
         }
         static removeClass(t, s, e) {
-          let i = false, n = t;
+          let i = false, n = t, r = e || {};
           (t instanceof window.HTMLElement || t instanceof window.NodeList) && (i = true, t instanceof window.NodeList && (n = [...t]));
-          let r = this._setTargets(n), a = this._setTimings(r, e), o = [];
-          r.forEach((h) => {
-            o.push(new u(h, s, "removeClass", i));
-          }), this._animate(o, a, e);
+          let a = this._setTargets(n), h = this._setTimings(a, r), o = [];
+          a.forEach((c) => {
+            o.push(new u(c, s, "removeClass", i));
+          }), this._animate(o, h, r);
         }
         static _animate(t, s, e) {
           function i(r) {
-            let a = r - n - s.delay, o = Math.min(a / s.totalDuration, 1);
-            t.forEach((h, l) => {
-              let d = Math.min((a - s.stagger * l) / s.duration, 1);
+            let a = r - n - s.delay, h = Math.min(a / s.totalDuration, 1);
+            t.forEach((o, c) => {
+              let d = Math.min((a - s.stagger * c) / s.duration, 1);
               if (d > 0) {
                 let g = s.easing(d);
-                h.update(g);
+                o.update(g);
               }
-            }), o < 1 ? (e.onUpdate && e.onUpdate(), requestAnimationFrame(i)) : (t.forEach((h) => {
-              h.update(1);
+            }), h < 1 ? (e.onUpdate && e.onUpdate(), requestAnimationFrame(i)) : (t.forEach((o) => {
+              o.update(1);
             }), e.onComplete && e.onComplete());
           }
           e.onStart && e.onStart();
@@ -479,9 +479,6 @@
     return translateDistance * 100;
   };
   DOMTranslateX = calculateTranslateXOffset();
-  window.addEventListener("resize", () => {
-    DOMTranslateX = calculateTranslateXOffset();
-  });
   var DOMToButton = document.getElementById("dom-to--button");
   var DOMToReset = document.getElementById("dom-to--reset");
   DOMToButton.addEventListener("click", () => {
@@ -522,6 +519,15 @@
   DOMFromToReset.addEventListener("click", () => {
     DOMFromToElement.style.transform = ``;
     DOMFromToButton.removeAttribute("disabled");
+  });
+  var DOMClassAdd = document.getElementById("dom-class--add");
+  var DOMClassRemove = document.getElementById("dom-class--remove");
+  var DOMClassElement = document.querySelector(".dom-class--card");
+  DOMClassAdd.addEventListener("click", () => {
+    import_director_min.default.addClass(DOMClassElement, { class: "dark" });
+  });
+  DOMClassRemove.addEventListener("click", () => {
+    import_director_min.default.removeClass(DOMClassElement, { class: "dark" });
   });
   var DOMSceneButton = document.getElementById("dom-scene--button");
   var DOMSceneReset = document.getElementById("dom-scene--reset");
@@ -581,5 +587,9 @@
   var input = document.querySelector("input");
   input.addEventListener("input", (event) => {
     JSScene.setProgress(event.target.value);
+  });
+  window.addEventListener("resize", () => {
+    DOMTranslateX = calculateTranslateXOffset();
+    DOMCamera.resize();
   });
 })();
